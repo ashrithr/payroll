@@ -1,0 +1,270 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+@import org.joda.time.DateTime
+
+@(loggedUser: User, loginInfo: LoginInfo, date: DateTime, projects: List[Project], containsNone: Boolean, timesheets: List[Timesheet], timesheetDetails: List[TimesheetDetail], users: List[User])(implicit request: RequestHeader, messages: Messages)
+
+@import org.joda.time.Interval; var dateRange = new Interval(DateTime.now, DateTime.now);
+@import org.joda.time.DateTime; val weekStart = date.dayOfWeek().withMinimumValue(); val weekEnd = date.dayOfWeek().withMaximumValue();
+
+@weekViewScripts = {
+  <script type="text/javascript">
+    var now = moment();
+    var currentStartOfWeek = now.startOf('isoWeek');
+    var currentEndOfWeek = now.endOf('isoWeek');
+
+    $("#nextWeek").click(function () {
+      var urlSegment = window.location.pathname;
+      var urlSegmentArray = urlSegment.split('/');
+      var currentDate = urlSegmentArray[urlSegmentArray.length - 1];
+      var nextWeekDate = moment(new Date(currentDate)).add(1, 'weeks'); //.startOf('isoWeek');
+      window.location.href = "/timesheets/@{loggedUser.profiles.map(_.email)}/" + nextWeekDate.format("YYYY-MM-DD");
+    });
+
+    $("#prevWeek").click(function() {
+      var urlSegment = window.location.pathname;
+      var urlSegmentArray = urlSegment.split('/');
+      var currentDate = urlSegmentArray[urlSegmentArray.length - 1];
+      var prevWeekDate = moment(new Date(currentDate)).subtract(1, 'weeks');
+      window.location.href = "/timesheets/@{loggedUser.profiles.map(_.email)}/" + prevWeekDate.format("YYYY-MM-DD");
+    });
+
+    $("#showCalendar").datepicker().on('changeDate', function (e) {
+      var date = moment(e.date).format("YYYY-MM-DD");
+      window.location.href = "/timesheets/@{loggedUser.profiles.map(_.email)}/" + date;
+    });
+
+    /*Enable the submit button if the user has changed the value of any of the inputs for specific project*/
+    @projects.map { project =>
+
+    $('.hours-@project._id.get.stringify').change(function() {
+      if ($(this).val()) {
+        $('#save-@project._id.get.stringify').removeAttr('disabled')
+      }
+    });
+
+    $("#save-@project._id.get.stringify").click(function () {
+      var _this = $(this);
+      _this.html('<em>Saving</em> <i class="fa fa-spinner fa-spin"></i>');
+      _this.attr('disabled', true); // no double submit
+      $.ajax({
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        url: "@routes.TimesheetConsultant.save(project._id.get.stringify, loggedUser.id.toString, date.toString("YYYY-MM-dd"))",
+        data: $("#form-@project._id.get.stringify").formAsJson(),
+        success: function(data) {
+          if(!data.success) {
+            console.log("Error: " + data.message);
+            _this.attr('disabled', false); // re-enable submit
+            _this.html('Re-submit');
+            $('#errorsLabel-@project._id.get.stringify').addClass('text-danger').html(data.message);
+          } else {
+            console.log("Success: " + data.message);
+            _this.html("Save");
+            location.reload();
+          }
+        },
+        error: function () {
+          _this.attr('disabled', false); // re-enable submit
+          _this.html('Re-submit');
+        }
+      });
+    });
+
+    $("#submit-@project._id.get.stringify").click(function() {
+      var _this = $(this);
+      _this.html('<em>Submitting</em> <i class="fa fa-spinner fa-spin"></i>');
+      _this.attr('disabled', true); // no double submit
+      $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "@routes.TimesheetConsultant.submit(project._id.get.stringify, loggedUser.id.toString, date.toString("YYYY-MM-dd"))",
+        success: function(data) {
+          if(!data.success) {
+            console.log("Error: " + data.message);
+            _this.attr('disabled', false); // re-enable submit
+            _this.html('Re-submit');
+            $('#errorsLabel-@project._id.get.stringify').addClass('text-danger').html(data.message);
+          } else {
+            console.log("Success: " + data.message);
+            _this.html("Submit");
+            location.reload();
+          }
+        },
+        error: function () {
+          _this.attr('disabled', false); // re-enable submit
+          _this.html('Re-submit');
+        }
+      });
+    });
+
+    } @*end projectsMap*@
+
+    function sumProjectHours(projectName) {
+      var mon = $("#Mon-" + projectName).val();
+      var tue = $("#Tue-" + projectName).val();
+      var wed = $("#Wed-" + projectName).val();
+      var thu = $("#Thu-" + projectName).val();
+      var fri = $("#Fri-" + projectName).val();
+      var sat = $("#Sat-" + projectName).val();
+      var sun = $("#Sun-" + projectName).val();
+
+      var result = parseFloat(mon) + parseFloat(tue) + parseFloat(wed) + parseFloat(thu) + parseFloat(fri) + parseFloat(sat) + parseFloat(sun);
+
+      if (!isNaN(result)) {
+        $("#total-" + projectName).val(result.toFixed(2));
+      }
+    }
+  </script>
+}
+
+@views.html.templates.mainApp(Messages("app.timesheets.week.view.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), weekViewScripts) {
+
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("timesheets.timesheet.consultant.view")
+
+        <div class="btn-group btn-group-sm pull-xs-right" role="group">
+          <button id="prevWeek" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Go to previous week"><i class="fa fa-chevron-left fa-lg"></i></button>
+          <button id="nextWeek" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Go to next week"><i class="fa fa-chevron-right fa-lg"></i></button>
+          <button id="showCalendar" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Browse Calender"><i class="fa fa-calendar fa-lg"></i></button>
+        </div>
+      </h3>
+      <h6 class="card-subtitle text-muted">This timesheet is for week of @{date.dayOfWeek().withMinimumValue().toString("dd MMM")} - @{date.dayOfWeek().withMaximumValue().toString("dd MMM")}</h6>
+    </div>
+
+    <div class="container">
+        @*Does the user have any projects associated*@
+        @if(projects.isEmpty) {
+          <div class="card">
+            <div class="card-block">
+              <div class="text-xs-center">
+                <h5>No projects have been assigned to you yet. Contact admin, if this is a mistake.</h5>
+              </div>
+            </div>
+          </div>
+        } else { @if(containsNone) {
+
+          <div class="card">
+            <div class="card-block">
+              <div class="text-xs-center">
+                <h4>You have no project's assigned for this week. Contact admin, if this is a mistake.</h4>
+                <p>Your project's and their respective start and end dates are as follows: </p>
+                @projects.map { project =>
+                  <p>
+                    <b>@project.projectName</b>:
+                    Start Date: @project.startDate.get.toString("YYYY-MM-dd"), End date: @project.endDate.get.toString("YYYY-MM-dd")
+                  </p>
+                }
+              </div>
+            </div>
+          </div>
+
+        } else {
+
+          @projects.map { project =>
+            <div class="card">
+              <div class="card-header bg-primary">
+                <b>Project Name: @project.projectName</b>
+                <!-- TODO ADD Status of timesheet to the header in labels format -->
+              </div>
+              <form role="form" id="form-@project._id.get.stringify">
+                <div class="alt-table-responsive">
+                  <table class="table">
+                    <thead class="header">
+                      <tr>
+                        @for(weekDay <- (0 until 7).map(date.dayOfWeek().withMinimumValue().plusDays(_))) {
+                          <td class="col-8 text-xs-center"><b>@weekDay.dayOfWeek().getAsShortText()</b><br>@weekDay.toString("dd MMM")</td>
+                        }
+                        <td class="col-8 text-xs-center"><b>Total</b></td>
+                      </tr>
+                      <tr>
+                        @for(weekDay <- (0 until 7).map(date.dayOfWeek().withMinimumValue().plusDays(_))) {
+                          @{dateRange =  new Interval(project.startDate.get, project.endDate.get)}
+                          @if(dateRange.contains(weekDay)) { @* If provided week falls under project start and end dates *@
+                            @if(timesheets.exists(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart)) { @* If a timesheet exists for provided project and week date *@
+                              @if(timesheetDetails.exists(_.timesheetId == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get._id.get.stringify)) { @* If a timesheet detail exists for provided timesheet and day of the week *@
+                                @if(timesheets.find(t => t.projectCode == project._id.get.stringify && t.weekStart == weekStart).get.status == TimesheetStatus.SUBMITTED || timesheets.find(t => t.projectCode == project._id.get.stringify && t.weekStart == weekStart).get.status == TimesheetStatus.APPROVED) { @* If the timesheet is already submitted or approved *@
+                                  <td class="col-8 text-xs-center">
+                                    <input class="form-control count hours-@project._id.get.stringify text-xs-center" id="@weekDay.dayOfWeek().getAsShortText()-@project._id.get.stringify" name="@weekDay.toString("YYYY-MM-dd")" placeholder="00.00" onchange="sumProjectHours('@project._id.get.stringify');" value="@timesheetDetails.find(tsd => tsd.timesheetId == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get._id.get.stringify && tsd.workDay == weekDay).get.hours" disabled>
+                                  </td>
+                                } else { @* only if the timesheet is not already submitted or approved then only the user can edit/enter the hours for a specified date *@
+                                  <td class="col-8 text-xs-center">
+                                    <input class="form-control count hours-@project._id.get.stringify text-xs-center" id="@weekDay.dayOfWeek().getAsShortText()-@project._id.get.stringify" name="@weekDay.toString("YYYY-MM-dd")" placeholder="00.00" onchange="sumProjectHours('@project._id.get.stringify');" value="@timesheetDetails.find(tsd => tsd.timesheetId == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get._id.get.stringify && tsd.workDay == weekDay).get.hours">
+                                  </td>
+                                }
+                              } else { @* if timesheet exists and timesheet details does not exist *@
+                                <td class="col-8 text-xs-center">
+                                  <input class="form-control count hours-@project._id.get.stringify text-xs-center" id="@weekDay.dayOfWeek().getAsShortText()-@project._id.get.stringify" name="@weekDay.toString("YYYY-MM-dd")" placeholder="00.00" onchange="sumProjectHours('@project._id.get.stringify');" value="0.0">
+                                </td>
+                              }
+                            } else { @* if timesheet does not exist *@
+                              <td class="col-8 text-xs-center">
+                                <input class="form-control count hours-@project._id.get.stringify text-xs-center" id="@weekDay.dayOfWeek().getAsShortText()-@project._id.get.stringify" name="@weekDay.toString("YYYY-MM-dd")" placeholder="00.00" onchange="sumProjectHours('@project._id.get.stringify');" value="0.0">
+                              </td>
+                            }
+                          } else { @* if the date does not fall under project's start and end dates *@
+                            <td class="col-8 text-xs-center">
+                              <input class="form-control count hours-@project._id.get.stringify text-xs-center" id="@weekDay.dayOfWeek().getAsShortText()-@project._id.get.stringify" name="@weekDay.toString("YYYY-MM-dd")" placeholder="00.00" onchange="sumProjectHours('@project._id.get.stringify');" value="0.0" disabled>
+                            </td>
+                          }
+                        }
+                        <td class="col-8 text-xs-center">
+                          <input class="form-control text-xs-center" id="total-@project._id.get.stringify" name="" placeholder="00.00" value="0.0" disabled>
+                        </td>
+                      </tr>
+                    </thead>
+                  </table>
+                </div> <!-- ./table-responsive -->
+                <p id="errorsLabel-@project._id.get.stringify" class="text-xs-center"></p>
+              </form>
+              <div class="card-footer clearfix">
+                <div class="btn-group btn-group-sm pull-xs-right" role="group">
+                  <button id="save-@project._id.get.stringify" type="button" class="btn btn-success-outline" disabled>Save</button>
+                  @if(timesheets.exists(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart)) {
+                    @if(timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.status == TimesheetStatus.SAVED) {
+                      @* If timesheet exists and timesheet is saved then only enable submit button *@
+                      <button id="submit-@project._id.get.stringify" type="button" class="btn btn-primary-outline">Submit</button>
+                    } else {
+                      <button id="submit-@project._id.get.stringify" type="button" class="btn btn-primary-outline" disabled>Submit</button>
+                    }
+                  } else {
+                    <button id="submit-@project._id.get.stringify" type="button" class="btn btn-primary-outline" disabled>Submit</button>
+                  }
+                </div>
+              </div>
+              <div class="card-footer pull-xs-right">
+              @if(timesheets.exists(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart)) {
+                @timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.status match {
+                  case TimesheetStatus.SAVED => {
+                    <small class="text-muted">Saved <span class="timeago" date-value="@timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.savedAt"></span></small>
+                  }
+                  case TimesheetStatus.SUBMITTED => {
+                    <small class="text-primary">Submitted <span class="timeago" date-value="@timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.submittedAt"></span>. Awaiting approval.</small>
+                  }
+                  case TimesheetStatus.APPROVED => {
+                    <small class="text-success">Approved <span class="timeago" date-value="@timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.approvedAt"></span>, by @users.find(_.id.toString == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.approvedBy.get).get.profiles.head.fullName</small>
+                  }
+                  case TimesheetStatus.DENIED => {
+                    <small class="text-danger">Denied <span class="timeago" date-value="@timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.disapprovedAt"></span>, by @{users.find(_.id.toString == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.disapprovedBy.get).get.profiles.head.fullName}</small>
+                  }
+                }
+              }
+              </div>
+            </div>
+          }
+
+        }}
+
+    </div> <!-- ./container -->
+  </div> <!-- ./card -->
+
+  <style>
+  .card-footer {
+    color: #FFF;
+    background-color: #FFF;
+    border-color: #FFF;
+  }
+  </style>
+}

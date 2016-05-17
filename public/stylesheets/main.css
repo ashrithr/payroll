@@ -1,0 +1,156 @@
+body {
+    background-color: #f8f8f8;
+    padding-top: 70px; /* For pushing content beyond navbar-fixed-top */
+}
+
+body, html {
+    height:100%;
+}
+
+/* workaround modal-open padding issue */
+body.modal-open {
+    padding-right:0 !important;
+}
+
+/* workaround bs 4 horizontal scrollbar */
+.container-fluid >.row {
+    margin-left: -15px;
+    margin-right: -10px;
+}
+
+.avatar {
+    height: 40px;
+    /*margin-top: 5px;*/
+    border-radius: 3px;
+}
+
+.small-avatar {
+    height: 20px;
+    border-radius: 3px;
+    margin-right: 8px;
+}
+
+.strong {
+    font-weight: 700;
+}
+
+.small-margin-top {
+    margin-top: 5px;
+}
+
+.spacer {
+    margin: 0;
+    padding: 0;
+    height: 25px;
+}
+
+/*
+ * Off Canvas at medium breakpoint
+ * --------------------------------------------------
+ */
+@media screen and (max-width: 48em) {
+
+    .row-offcanvas {
+        position: relative;
+        -webkit-transition: all 0.25s ease-out;
+        -moz-transition: all 0.25s ease-out;
+        transition: all 0.25s ease-out;
+    }
+
+    .row-offcanvas-left,
+    .sidebar-offcanvas {
+        left: -33%;
+    }
+
+    .row-offcanvas-left.active {
+        left: 33%;
+    }
+
+    .sidebar-offcanvas {
+        background-color:#f6f6f6;
+        position: absolute;
+        top: 0;
+        width: 33%;
+        height: 100%;
+    }
+}
+
+/*
+ * Off Canvas wider at sm breakpoint
+ * --------------------------------------------------
+ */
+@media screen and (max-width: 34em) {
+    .row-offcanvas-left,
+    .sidebar-offcanvas {
+        left: -45%;
+    }
+
+    .row-offcanvas-left.active {
+        left: 45%;
+    }
+
+    .sidebar-offcanvas {
+        width: 45%;
+    }
+}
+
+
+/* responsive nav stacked liked 3.x */
+@media(max-width:34em) {
+    .navbar .navbar-brand {
+        float:none;
+        display: block;
+    }
+    .navbar .navbar-nav>.nav-item {
+        float: none;
+        margin-left: .1rem;
+    }
+    .navbar .navbar-nav {
+        float:none !important;
+    }
+}
+
+.card {
+    overflow:hidden;
+}
+
+.card-block .rotate {
+    z-index: 8;
+    float: right;
+    height: 100%;
+}
+
+.card-block .rotate i {
+    color: rgba(20, 20, 20, 0.15);
+    position: absolute;
+    left: auto;
+    right: -10px;
+    bottom: 0;
+    display: block;
+    -webkit-transform: rotate(-44deg);
+    -moz-transform: rotate(-44deg);
+    -o-transform: rotate(-44deg);
+    -ms-transform: rotate(-44deg);
+    transform: rotate(-44deg);
+}
+
+.col-8{
+    width: 12.5%;
+    min-width: 75px;
+}
+
+@media screen and (max-width: 767px) {
+    .alt-table-responsive {
+        width: 100%;
+        margin-bottom: 15px;
+        overflow-y: hidden;
+        overflow-x: auto;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        border: 1px solid #dddddd;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+.w-medium {
+    width: 176px;
+}

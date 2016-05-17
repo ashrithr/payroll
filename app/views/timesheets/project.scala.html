@@ -1,0 +1,171 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, project: Option[Project], vendor: Option[Vendor], client: Option[Client], users: List[User])(implicit request: RequestHeader, messages: Messages)
+
+@projectScripts = {
+  <script type="text/javascript">
+    $("#addUserModalBtn").on('click', function() {
+      var _this = $(this);
+      _this.html('<em>Submitting</em> <i class="fa fa-spinner fa-spin"></i>');
+      _this.attr('disabled', true); // prevent double submit
+
+      $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "@routes.TimesheetAdmin.addConsultantToProject(project.map(_._id.get.stringify).get)",
+        contentType: "application/json",
+        data: JSON.stringify({ 'team': { 'consultant': $("#addUserSelect").val(), 'cost': $("#userCost").val() } }),
+        success: function(data) { // Ok
+          console.log(data);
+          $("#addUserModalLabel").addClass('text-info').html(data.message);
+          $("#addUserModal").hide();
+          location.reload();
+          _this.html("Submitted");
+        },
+        error: function(data) { // BadRequest
+          console.log(data);
+          $("#addUserModalLabel").addClass('text-danger').html(data.message);
+          _this.attr('disabled', false); // re-enable submit
+          _this.text('Re-submit');
+        }
+      });
+    });
+
+    @project.map { p =>
+      @p.team.map { consultants =>
+        @consultants.map { consultant =>
+
+    $("#removeUser-@consultant.userId").on('click', function() {
+      var _this = $(this);
+      _this.html('<i class="fa fa-spinner fa-spin"></i>');
+      _this.attr('disabled', true);
+
+      console.log("inside remove user");
+
+      $.ajax({
+        type: "DELETE",
+        url: "@routes.TimesheetAdmin.removeConsultantFromProject(p._id.get.stringify, consultant.userId)",
+        success: function() {
+          location.reload()
+        },
+        error: function() {
+          location.reload()
+        }
+      });
+    });
+
+        }
+      }
+    }
+
+  </script>
+}
+
+@views.html.templates.mainApp(Messages("app.timesheets.project.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), projectScripts) {
+
+  @* Modals *@
+  <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.project.add.users.title")</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <fieldset class="form-group">
+              <label for="addUserSelect">Select a consultant:</label>
+              <select class="form-control select2" id="addUserSelect">
+                @users.filter(_.role == Role.CONSULTANT).filterNot(c => project.get.team.getOrElse(List()).map(_.userId).contains(c.id.toString)).map { consultant =>
+                  <option value="@consultant.id">@consultant.profiles.map(_.fullName)</option>
+                }
+              </select>
+            </fieldset>
+            <fieldset class="form-group">
+              <label for="userCost">Cost per hour:</label>
+              <input class="form-control" type="text" name="userCost" id="userCost" placeholder="0.00">
+            </fieldset>
+          </form>
+
+          <p id="addUserModalLabel" class="text-center"></p>
+          <hr />
+          <button id="addUserModalBtn" name="SubmitBtn" class="btn btn-large btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @*Project information*@
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header bg-success">
+        <b>Project Information</b>
+      </div>
+      @project.map { p =>
+        <table class="table">
+          <tr><td>Name</td> <td>@p.projectName</td></tr>
+          <tr><td>Start Date</td> <td>@p.startDate.map(_.toString("MM-dd-YYYY"))</td></tr>
+          <tr><td>End Date</td> <td>@p.endDate.map(_.toString("MM-dd-YYYY"))</td></tr>
+          <tr><td>Preferred Currency</td> <td>@p.preferredCurrency</td></tr>
+          <tr><td>Bi Weekly</td> <td>@p.biWeekly</td></tr>
+          <tr><td>Monthly</td> <td>@p.monthly</td></tr>
+          <tr><td>Notes</td> <td>@p.notes</td></tr>
+          @client.map { c =>
+            <tr><td>Client</td> <td>@c.companyName</td></tr>
+          }
+          @vendor.map { v =>
+            <tr><td>Vendor</td> <td>@v.companyName</td></tr>
+          }
+        </table>
+      }
+    </div>
+  </div>
+
+  @*Project add/remove users*@
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header bg-primary">
+        <b>Consultants</b>
+      </div>
+      <div class="card-block">
+        <p>
+          Add or delete users to this project
+          <span class="pull-xs-right">
+            <a class="btn btn-success-outline" data-toggle="modal" href="#addUserModal" id="addUser">
+              <i class="fa fa-plus" aria-hidden="true"></i> Add
+            </a>
+          </span>
+        </p>
+      </div>
+      <table class="table">
+      @project.map { p =>
+        @p.team.map { consultants =>
+          @consultants.map { consultant =>
+            <tr>
+              <td align="left">@users.find(_.id.toString == consultant.userId).get.profiles.map(_.fullName)</td>
+              <td align="center">@consultant.rate</td>
+              <td align="right"><button type="button" id="removeUser-@consultant.userId" class="btn btn-danger-outline btn-sm" data-toggle="tooltip" data-placement="bottom" title="Remove this user"><i class="fa fa-times fa-lg" aria-hidden="true"></i></button></td>
+            </tr>
+          }
+        }
+      }
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-header bg-danger">
+        <b>Remove Project</b>
+      </div>
+      <div class="card-block">
+        <p>Deleting a project has the following effects:</p>
+        <ul>
+          <li>All the projects related information will be lost.</li>
+        </ul>
+
+        <button class="btn btn-sm btn-danger-outline">REMOVE PROJECT</button>
+      </div>
+    </div>
+  </div>
+
+}
+

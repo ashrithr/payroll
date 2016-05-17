@@ -1,0 +1,90 @@
+@import com.typesafe.config.Config
+
+@(config: Config)(content: Html)
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")"/>
+    <link rel="stylesheet" media="screen" href='@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")'/>
+  </head>
+
+  <style>
+    .container-fluid {
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    .row {
+      margin-right: -15px;
+      margin-left: -15px;
+    }
+    .logo-color {
+      color: @config.getString("company.logo.color");
+    }
+    .text-success {
+      color: #3c763d;
+    }
+    .bg-success {
+      background-color: #dff0d8;
+    }
+    .text-xs-center {
+      text-align: center !important;
+    }
+    .pull-xs-right {
+      float: right !important;
+    }
+    .div-bordered-logo {
+      border: 1px solid #72b781;
+    }
+    .col-md-6 {
+      position: relative;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+      float: left;
+      width: 50%;
+    }
+    .table {
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 1rem;
+      border: 1px solid #72b781;
+    }
+    .table thead th,
+    .table thead td {
+      border-bottom-width: 2px;
+    }
+    .table-colored,
+    .table-colored > th,
+    .table-colored > td {
+      background-color: #72b781;
+    }
+    /*.footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      margin-top: -50px;
+      background: #6cf;
+    }*/
+    .footer-text {
+      margin: 20px 0;
+      color: #818a91 !important;
+      font-size: 80%;
+    }
+    .small {
+      font-size: 80%;
+    }
+  </style>
+
+  <body>
+    <div class="container-fluid">
+    @content
+    </div>
+  </body>
+</html>

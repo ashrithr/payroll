@@ -1,0 +1,253 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, createContactForm: Form[forms.ContactForm.FormData], createClientForm: Form[forms.ClientForm.FormData], createVendorForm: Form[forms.VendorForm.FormData], contacts: List[Contact], clients: List[Client], vendors: List[Vendor])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-4", "col-md-8") }
+
+@adminScripts = {
+  <script type="text/javascript">
+    var tabs = $('#myTabs');
+
+    tabs.find('a').click(function(e) {
+      e.preventDefault();
+      $(this).tab('show');
+    });
+
+    // store the currently selected tab in the hash value
+    $("ul.nav-tabs > li > a").on("show.bs.tab", function(e) {
+      window.location.hash = $(e.target).attr("href").substr(1);
+    });
+
+    // on load of the page: switch to the currently selected tab
+    var hash = window.location.hash;
+    tabs.find('a[href="' + hash + '"]').tab('show');
+  </script>
+}
+
+@views.html.templates.mainApp(Messages("app.timesheets.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), adminScripts) {
+
+  <div class="modal fade" id="createContactModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.contact.create.title")</h4>
+        </div>
+        <div class="modal-body">
+          @b4.form(routes.TimesheetAdmin.createContact) {
+            @b4.text(createContactForm("firstName"),
+              '_label -> "First Name",
+              '_placeholder -> "First name of the contact")
+            @b4.text(createContactForm("lastName"),
+              '_label -> "Last Name",
+              '_placeholder -> "Last name of the contact")
+            @b4.email(createContactForm("email"),
+              '_label -> "Email",
+              '_placeholder -> "Email of the contact")
+            @b4.text(createContactForm("title"),
+              '_label -> "Title",
+              '_placeholder -> "Title of the contact")
+            @b4.text(createContactForm("officeNum"),
+              '_label -> "Office Num",
+              '_placeholder -> "Office Num of the contact")
+            @b4.text(createContactForm("mobileNum"),
+              '_label -> "Mobile Num",
+              '_placeholder -> "Mobile Num of the contact")
+            @b4.text(createContactForm("faxNum"),
+              '_label -> "Fax Num",
+              '_placeholder -> "Fax Num of the contact")
+            @b4.submit('class -> "btn btn-primary-outline"){ Create Contact }
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="createClientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.client.create.title")</h4>
+        </div>
+        <div class="modal-body">
+        @b4.form(routes.TimesheetAdmin.createClient, 'id -> "clientAddForm") {
+          @b4.text(createClientForm("companyName"),
+            '_label -> "Company Name",
+            '_placeholder -> "Name of the Client Company")
+          @b4.text(createClientForm("companyAddress"),
+            '_label -> "Company Address",
+            '_placeholder -> "Address of the Client Company")
+          @b4.select(createClientForm("primaryContacts"),
+            options = contacts.map(c => (c._id.get.stringify, s"${c.firstName} ${c.lastName}")),
+            'class -> "select2",
+            '_label -> "Primary Contacts",
+            'multiple -> true,
+            '_help -> "Select at-least one contact. This contact will be used for email communication.")
+          @b4.select(createClientForm("secondaryContacts"),
+            options = contacts.map(c => (c._id.get.stringify, s"${c.firstName} ${c.lastName}")),
+            'class -> "select2",
+            '_label -> "Secondary Contacts",
+            'multiple -> true)
+          @b4.submit('class -> "btn btn-primary-outline"){ Create Client }
+        }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="createVendorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.vendor.create.title")</h4>
+        </div>
+        <div class="modal-body">
+        @b4.form(routes.TimesheetAdmin.createVendor, 'id -> "vendorAddForm") {
+          @b4.text(createClientForm("companyName"),
+            'id -> "vendorCompanyName",
+            '_label -> "Company Name",
+            '_placeholder -> "Name of the Client Company")
+          @b4.text(createClientForm("companyAddress"),
+            'id -> "vendorCompanyAddress",
+            '_label -> "Company Address",
+            '_placeholder -> "Address of the Client Company")
+          @b4.select(createClientForm("primaryContacts"),
+            options = contacts.map(c => (c._id.get.stringify, s"${c.firstName} ${c.lastName}")),
+            'class -> "select2",
+            'id -> "vendorPrimaryContacts",
+            '_label -> "Primary Contacts",
+            'multiple -> true,
+            '_help -> "Select at-least one contact. This contact will be used for email communication.")
+          @b4.select(createClientForm("secondaryContacts"),
+            options = contacts.map(c => (c._id.get.stringify, s"${c.firstName} ${c.lastName}")),
+            'id -> "vendorSecondaryContacts",
+            '_label -> "Secondary Contacts",
+            'multiple -> true)
+          @b4.submit('class -> "btn btn-primary-outline"){ Create Vendor }
+        }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="text-primary">@Messages("timesheets.admin.header")</h2>
+
+  <div class="spacer"></div>
+
+  <ul class="nav nav-tabs" role="tablist" id="myTabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#contacts" role="tab">Contacts</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#clients" role="tab">Clients</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#vendors" role="tab">Vendors</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane active" id="contacts" role="tabpanel">
+      <div class="container">
+        <div class="spacer"></div>
+        <h4>
+          Contacts
+            <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createContactModal">
+              Create Contact
+            </button>
+        </h4>
+        <div class="spacer"></div>
+        <p class="text-muted">Contacts are point of contacts for a particular vendor or client. You have to create contact's before creating Client or Vendor's.</p>
+
+        @contacts match {
+          case Nil => { <p class="lead">No contacts have been added yet!</p> }
+          case _ => {
+            @contacts.map { contact =>
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <b class="list-group-item-heading">
+                    @contact.firstName @contact.lastName
+                    <span class="pull-xs-right">
+                      <span class="label label-info timeago" date-value="@contact.created"></span>
+                    </span>
+                  </b>
+                  <p class="list-group-item-text">@contact.email</p>
+                </li>
+              </ul>
+            }
+          }
+        }
+      </div>
+    </div>
+
+    <div class="tab-pane" id="clients" role="tabpanel">
+      <div class="container">
+        <div class="spacer"></div>
+        <h4>
+          Clients
+            <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createClientModal">
+              Create Client
+            </button>
+        </h4>
+        <div class="spacer"></div>
+
+        @clients match {
+          case Nil => { <p class="lead">No Clients have been added yet!</p> }
+          case _ => {
+            @clients.map { client =>
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <b class="list-group-item-heading">
+                    @client.companyName
+                    <span class="pull-xs-right">
+                      <span class="label label-info timeago" date-value="@client.created"></span>
+                    </span>
+                  </b>
+                  <p class="list-group-item-text">@client.companyAddress</p>
+                </li>
+              </ul>
+            }
+          }
+        }
+      </div>
+    </div>
+
+    <div class="tab-pane" id="vendors" role="tabpanel">
+      <div class="container">
+        <div class="spacer"></div>
+        <h4>
+          Vendors
+            <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createVendorModal">
+              Create Vendor
+            </button>
+        </h4>
+        <div class="spacer"></div>
+
+        @vendors match {
+          case Nil => {
+            <p class="lead">No Vendors have been added yet!</p>
+          }
+          case _ => {
+            @vendors.map { vendor =>
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <b class="list-group-item-heading">
+                    @vendor.companyName
+                  <span class="pull-xs-right">
+                    <span class="label label-info timeago" date-value="@vendor.created"></span>
+                  </span>
+                  </b>
+                  <p class="list-group-item-text">@vendor.companyAddress</p>
+                </li>
+              </ul>
+            }
+          }
+        }
+      </div>
+    </div>
+
+  </div>
+
+}

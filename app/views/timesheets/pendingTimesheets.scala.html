@@ -1,0 +1,83 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, timesheets: List[Timesheet], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+
+@timesheetScripts = {
+  <script type="text/javascript">
+    @timesheets.map { timesheet =>
+
+      $("#approveRequest-@timesheet._id.get.stringify").click(function() {
+        var _this = $(this);
+        _this.html('<i class="fa fa-spinner fa-spin"></i>');
+        _this.attr('disabled', true); // no double submit
+
+        $.ajax({
+          type: "POST",
+          url: "/timesheets/approve/@timesheet._id.get.stringify",
+          success: function(data){
+            location.reload();
+          },
+          error: function(e){
+            alert("Error occurred!" + e);
+          }
+        });
+      });
+
+      $("#denyRequest-@timesheet._id.get.stringify").click(function() {
+        var _this = $(this);
+        _this.html('<i class="fa fa-spinner fa-spin"></i>');
+        _this.attr('disabled', true); // no double submit
+
+        $.ajax({
+          type: "POST",
+          url: "/timesheets/deny/@timesheet._id.get.stringify",
+          success: function(data){
+            location.reload();
+          },
+          error: function(e){
+            alert("Error occurred!" + e);
+          }
+        });
+      });
+
+    }
+  </script>
+}
+
+@views.html.templates.mainApp(Messages("app.timesheets.pending.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), timesheetScripts) {
+
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("timesheets.timesheet.pending")
+      </h3>
+      <h6 class="card-subtitle text-muted">These are the pending timesheets that are submitted by consultants.</h6>
+    </div>
+
+    @timesheets match {
+      case Nil => {
+        <div class="card-block">
+          <p class="lead">No pending timesheets needs approval.</p>
+        </div>
+      }
+      case _ => {
+        <ul class="list-group list-group-flush">
+          @timesheets.map { timesheet =>
+            <li class="list-group-item">
+              <b class="list-group-item-heading">
+                @consultants.find(_.id.toString == timesheet.consultantId).map(_.profiles.map(_.fullName)) has logged @timesheet.totalHours hours for the week of @timesheet.weekStart.toString("dd MMM YYYY") - @timesheet.weekEnd.toString("dd MMM YYYY").
+                <span class="pull-xs-right">
+                  <span class="label label-default timeago" date-value="@timesheet.submittedAt"></span>
+                  <button type="button" id="approveRequest-@timesheet._id.get.stringify" class="btn btn-success-outline btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approve this request"><i class="fa fa-check fa-lg" aria-hidden="true"></i></button>
+                  <button type="button" id="denyRequest-@timesheet._id.get.stringify" class="btn btn-danger-outline btn-sm" data-toggle="tooltip" data-placement="bottom" title="Deny this request"><i class="fa fa-times fa-lg" aria-hidden="true"></i></button>
+                </span>
+              </b>
+              <p class="list-group-item-text text-muted"><small>This timesheet entry was created on: @timesheet.created.map(_.toString("dd MMM YYYY")), and last updated on: @timesheet.updated.map(_.toString("dd MMM YYYY")). </small></p>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div> <!-- outer card -->
+
+}

@@ -1,0 +1,74 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@import org.joda.time.DateTime
+@(title: String, tab: String = "", loggedUser: Option[User], loginInfo:Option[LoginInfo] = None, scripts: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages:Messages)
+
+@navbarContent = {
+  <ul class="nav navbar-nav">
+    <li class="nav-item @("active".when(tab == "index"))">
+      <a class="nav-link" href="@routes.Application.index">@Messages("navbar.index")</a>
+    </li>
+    @if(loggedUser.isDefined) {
+      <li class="nav-item @("active".when(tab == "profile"))">
+        <a class="nav-link" href="@routes.Application.profile">@Messages("navbar.profile")</a>
+      </li>
+    } else {
+      <li class="nav-item disabled">
+        <a class="nav-link">@Messages("navbar.profile")</a>
+      </li>
+    }
+    @loggedUser.map { user =>
+      @if(user.role == Role.OWNER || user.role == Role.ADMIN) {
+        <li class="nav-item @("active".when(tab == "users"))">
+          <a class="nav-link" href="@routes.UserController.users()">Users</a>
+        </li>
+        <li class="nav-item btn-group @("active".when(tab == "timesheets"))">
+          <a class="dropdown-toggle nav-link" type="button" id="dropdownMenuTimesheets" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Timesheets</a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuTimesheets">
+            <a class="dropdown-item" href="@routes.TimesheetAdmin.index">Manage</a>
+            <a class="dropdown-item" href="@routes.TimesheetAdmin.projects">Projects</a>
+            <a class="dropdown-item" href="@routes.TimesheetAdmin.pendingTimesheets">Pending Timesheets</a>
+          </div>
+        </li>
+        <li class="nav-item btn-group @("active".when(tab == "payroll"))">
+          <a class="dropdown-toggle nav-link" type="button" id="dropdownMenuPayroll" data-toggle="dropdown" aria-haspopup="true"  aria-expanded="false">Payroll</a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuPayroll">
+            <a class="dropdown-item" href="@routes.Payroll.index">Invoices</a>
+            <a class="dropdown-item" href="@routes.Payroll.invoicesDue">Invoices Due</a>
+          </div>
+        </li>
+      } else {
+        @if(user.role == Role.CONSULTANT) {
+          <li class="nav-item @("active".when(tab == "timesheets"))">
+            <a class="nav-link" href="@routes.TimesheetConsultant.view(user.profiles.flatMap(_.email).head, DateTime.now.toString("YYYY-MM-dd"))">
+              Timesheets</a>
+          </li>
+        }
+      }
+    }
+  </ul>
+  <ul class="nav navbar-nav pull-xs-right">
+  @loggedUser.map { user =>
+    @loginInfo.map { loginInfo =>
+      <li class="nav-item">
+        <img class="nav-link avatar" src="@user.profileFor(loginInfo).flatMap(_.avatarUrl).getOrElse(routes.Assets.versioned("images/default_profile.png"))"/>
+      </li>
+      <li class="nav-item">
+        <span class="nav-link">@Messages("navbar.username", user.fullName(loginInfo).getOrElse(Messages("navbar.none")))</span>
+      </li>
+    }
+    <li class="nav-item">
+      <a class="nav-link" href="@routes.Auth.signOut">@Messages("navbar.signout")</a>
+    </li>
+  }.getOrElse {
+    <li class="nav-item @("active".when(tab == "signin"))">
+      <a class="nav-link" href="@routes.Auth.signIn">@Messages("navbar.signin")</a>
+    </li>
+    <li class="nav-item @("active".when(tab == "signup"))">
+      <a class="nav-link" href="@routes.Auth.startSignUp">@Messages("navbar.signup")</a>
+    </li>
+  }
+  </ul>
+}
+
+@main(title, navbarContent, scripts)(content)

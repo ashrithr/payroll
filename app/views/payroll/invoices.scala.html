@@ -1,0 +1,64 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+
+@invoiceScripts = {
+  <script type="text/javascript">
+    @invoices.map { invoice =>
+      $("#hideInvoice-@invoice._id.get.stringify").click(function() {
+        $.ajax({
+          type: "PUT",
+          url: "/payroll/invoices/hide/@invoice._id.get.stringify",
+          success: function(data){
+            location.reload();
+          },
+          error: function(e){
+            alert("Error occurred!" + e);
+          }
+        });
+      });
+    }
+  </script>
+}
+
+@views.html.templates.mainApp(Messages("app.payroll.invoices.title"), tab = "payroll", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), invoiceScripts) {
+
+  <div class="spacer"></div>
+
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("payroll.invoices.index.header")
+        <a type="button" class="btn btn-primary btn-primary-outline pull-xs-right" href="@routes.Payroll.createInvoiceForm">
+          Create Invoice
+        </a>
+      </h3>
+      <h6 class="card-subtitle text-muted">Generate/track invoices.</h6>
+    </div>
+    @invoices match {
+      case Nil => {
+        <div class="card-block">
+          <p class="lead">No invoices have been generated yet!</p>
+        </div>
+      }
+      case _ => {
+        <ul class="list-group list-group-flush">
+        @invoices.map { invoice =>
+          <li class="list-group-item">
+            <b class="list-group-item-heading">
+              Invoice #@invoice._id.get.stringify.takeRight(5)
+              <span class="pull-xs-right">
+                <span class="label label-default timeago" date-value="@invoice.created"></span>
+                <a href="@routes.Payroll.generateInvoice(invoice._id.get.stringify)"><span class="label label-primary">Generate</span></a>
+                <a href="#" id="hideInvoice-@invoice._id.get.stringify"><span class="label label-warning">Hide</span></a>
+              </span>
+            </b>
+            <p class="list-group-item-text">Services provided by @consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName during @invoice.startDate.toString("MM/dd/yyyy")-@invoice.endDate.toString("MM/dd/yyyy")</p>
+          </li>
+        }
+        </ul>
+      }
+    }
+  </div>
+
+}
+

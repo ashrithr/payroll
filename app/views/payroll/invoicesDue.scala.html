@@ -1,0 +1,87 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+@import org.joda.time.DateTime
+
+@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+
+@invoiceScripts = {
+  <script type="text/javascript">
+    @invoices.map { invoice =>
+      $("#paymentMadeInvoice-@invoice._id.get.stringify").click(function() {
+        $.ajax({
+          type: "PUT",
+          url: "/payroll/invoices/paymentMade/@invoice._id.get.stringify",
+          success: function(data){
+            location.reload();
+          },
+          error: function(e){
+            alert("Error occurred!" + e);
+          }
+        });
+      });
+    }
+  </script>
+}
+
+@views.html.templates.mainApp(Messages("app.payroll.invoices.due.title"), tab = "payroll", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), invoiceScripts) {
+
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("payroll.invoices.due.header")
+      </h3>
+      <h6 class="card-subtitle text-muted">
+        @Messages("payroll.invoices.due.subHeader")
+      </h6>
+    </div>
+    @invoices match {
+      case Nil => {
+        <div class="card-block">
+          <p class="lead">No invoices are due for payment!</p>
+        </div>
+      }
+      case _ => {
+        <ul class="list-group list-group-flush">
+        @invoices.map { invoice =>
+          @if(invoice.dueDate.withTimeAtStartOfDay().isEqual(DateTime.now.withTimeAtStartOfDay())) { @*due today*@
+            <li class="list-group-item">
+              <b class="list-group-item-heading">
+                Invoice #@invoice._id.get.stringify.takeRight(5) is due today (@invoice.dueDate.toString("MM/dd/yyyy"))
+                <span class="pull-xs-right">
+                  <span class="label label-warning">Due Today</span>
+                  <span class="label label-default timeago" date-value="@invoice.created"></span>
+                  <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
+                </span>
+              </b>
+              <p class="list-group-item-text">Services provided by @consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName during @invoice.startDate.toString("MM/dd/yyyy")-@invoice.endDate.toString("MM/dd/yyyy")</p>
+            </li>
+          } else { @if(invoice.dueDate.isBefore(DateTime.now)) { @*past due*@
+            <li class="list-group-item">
+              <b class="list-group-item-heading">
+                Invoice #@invoice._id.get.stringify.takeRight(5) is past due by <span class="timeago" date-value="@invoice.dueDate"></span> (@invoice.dueDate.toString("MM/dd/yyyy"))
+                <span class="pull-xs-right">
+                  <span class="label label-danger">Past Due</span>
+                  <span class="label label-default timeago" date-value="@invoice.created"></span>
+                  <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
+                </span>
+              </b>
+              <p class="list-group-item-text">Services provided by @consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName during @invoice.startDate.toString("MM/dd/yyyy")-@invoice.endDate.toString("MM/dd/yyyy")</p>
+            </li>
+          } else {
+            <li class="list-group-item">
+              <b class="list-group-item-heading">
+                Invoice #@invoice._id.get.stringify.takeRight(5) is due in <span class="duein" date-value="@invoice.dueDate"></span> (@invoice.dueDate.toString("MM/dd/yyyy"))
+                <span class="pull-xs-right">
+                  <span class="label label-default timeago" date-value="@invoice.created"></span>
+                  <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
+                </span>
+              </b>
+              <p class="list-group-item-text">Services provided by @consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName during @invoice.startDate.toString("MM/dd/yyyy")-@invoice.endDate.toString("MM/dd/yyyy")</p>
+            </li>
+          }}
+        }
+        </ul>
+      }
+    }
+  </div>
+
+}

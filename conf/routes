@@ -1,0 +1,62 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Users
+GET      /                                            controllers.Application.index
+GET      /profile                                     controllers.Application.profile
+GET      /users                                       controllers.UserController.users
+GET      /users/:id                                   controllers.UserController.getUser(id: String)
+POST     /users/:id                                   controllers.UserController.updateUserRole(id: String)
+#DELETE  /users/:id                                   controllers.UserController.deleteUser(id: String)
+
+# Rest api
+POST     /rest/auth/authenticate                      controllers.RestApiAuthController.authenticate
+GET      /rest/profile                                controllers.RestApi.profile
+
+# Authentication
+GET      /auth/signup                                 controllers.Auth.startSignUp
+POST     /auth/signup                                 controllers.Auth.handleStartSignUp
+GET      /auth/signup/:token                          controllers.Auth.signUp(token: String)
+
+GET      /auth/signin                                 controllers.Auth.signIn
+POST     /auth/authenticate                           controllers.Auth.authenticate
+GET      /auth/signout                                controllers.Auth.signOut
+
+GET      /auth/reset                                  controllers.Auth.startResetPassword
+POST     /auth/reset                                  controllers.Auth.handleStartResetPassword
+GET      /auth/reset/:token                           controllers.Auth.resetPassword(token: String)
+POST     /auth/reset/:token                           controllers.Auth.handleResetPassword(token: String)
+
+# Timesheets Module
+GET      /timesheets/admin                            controllers.TimesheetAdmin.index
+POST     /timesheets/contacts                         controllers.TimesheetAdmin.createContact
+POST     /timesheets/clients                          controllers.TimesheetAdmin.createClient
+POST     /timesheets/vendors                          controllers.TimesheetAdmin.createVendor
+GET      /timesheets/projects                         controllers.TimesheetAdmin.projects
+GET      /timesheets/project/createForm               controllers.TimesheetAdmin.createProjectForm
+POST     /timesheets/projects                         controllers.TimesheetAdmin.createProject
+GET      /timesheets/projects/:id                     controllers.TimesheetAdmin.getProject(id: String)
+POST     /timesheets/projects/:id/consultants         controllers.TimesheetAdmin.addConsultantToProject(id: String)
+DELETE   /timesheets/projects/:id/consultants/:cId    controllers.TimesheetAdmin.removeConsultantFromProject(id: String, cId: String)
+GET      /timesheets/projects/:id/edit                controllers.TimesheetAdmin.editProjectForm(id: String)
+POST     /timesheets/projects/:id/edit                controllers.TimesheetAdmin.editProject(id: String)
+GET      /timesheets/pending                          controllers.TimesheetAdmin.pendingTimesheets
+POST     /timesheets/approve/:id                      controllers.TimesheetAdmin.approveTimesheet(id: String)
+POST     /timesheets/deny/:id                         controllers.TimesheetAdmin.denyTimesheet(id: String)
+GET      /timesheets/:userId/:date                    controllers.TimesheetConsultant.view(userId: String, date: String)
+POST     /timesheets/save/:projectId/:userId/:date    controllers.TimesheetConsultant.save(projectId: String, userId: String, date: String)
+POST     /timesheets/submit/:projectId/:userId/:date  controllers.TimesheetConsultant.submit(projectId: String, userId: String, date: String)
+
+# Payroll Module
+GET      /payroll/invoices                            controllers.Payroll.index()
+GET      /payroll/invoices/createForm                 controllers.Payroll.createInvoiceForm()
+POST     /payroll/invoices                            controllers.Payroll.createInvoice()
+GET      /payroll/invoices/generate/:invoiceId        controllers.Payroll.generateInvoice(invoiceId: String)
+PUT      /payroll/invoices/hide/:invoiceId            controllers.Payroll.hideInvoice(invoiceId: String)
+GET      /payroll/invoices/due                        controllers.Payroll.invoicesDue
+PUT      /payroll/invoices/paymentMade/:invoiceId     controllers.Payroll.paymentReceived(invoiceId: String)
+
+# Map static resources from the /public folder to the /assets URL path
+GET      /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET      /webjars/*file                               controllers.WebJarAssets.at(file)

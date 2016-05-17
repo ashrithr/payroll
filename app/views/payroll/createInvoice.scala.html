@@ -1,0 +1,41 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, invoiceForm: Form[forms.InvoiceForm.FormData], projects: List[Project], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{b4.horizontal.fieldConstructor("col-md-3","col-md-6")}
+
+@views.html.templates.mainApp(Messages("app.payroll.invoices.title"), tab = "payroll", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+
+  <div class="card">
+  @b4.form(routes.Payroll.createInvoice, 'class -> "card-block") {
+
+    <fieldset>
+      <legend>@Messages("invoice.legend")</legend>
+
+      @b4.select(invoiceForm("project"),
+        options = projects.map(p => (p._id.get.stringify, s"${p.projectName}")),
+        '_label -> Messages("invoice.project.label"),
+        'class -> "select2")
+
+      @b4.select(invoiceForm("consultant"),
+        options = consultants.map(c => (c.id.toString, s"${c.profiles.head.fullName.get}")),
+        '_label -> Messages("invoice.consultant.label"),
+        'class -> "select2")
+
+      @b4.text(invoiceForm("startDate"),
+        '_label -> Messages("invoice.start.date.label"),
+        'placeholder -> Messages("invoice.start.date.placeholder"),
+        'class -> "datepicker")
+
+      @b4.text(invoiceForm("endDate"),
+        '_label -> Messages("invoice.end.date.label"),
+        'placeholder -> Messages("invoice.end.date.placeholder"),
+        'class -> "datepicker")
+
+      @b4.submit('class -> "btn btn-primary"){ @Messages("invoice.submit") }
+    </fieldset>
+
+  }
+  </div>
+
+}

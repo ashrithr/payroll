@@ -1,0 +1,10 @@
+@(level: String = "info", message: String)
+
+@alertType = @{"alert-" + (if (level == "error") "danger" else level)}
+
+<div class="alert @alertType alert-dismissible fade in" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  @message
+</div>

@@ -1,0 +1,79 @@
+@import com.typesafe.config.Config
+
+@(invoice: Invoice, consultant: User, vendor: Vendor, client: Client, config: Config)
+
+@views.html.pdfs.template(config) {
+  <div class="row">
+    <h1 class="logo-color">@config.getString("company.logo.text")</h1>
+
+    <br/>
+
+    <h3 class="text-xs-center"><u>INVOICE</u></h3>
+
+    <div class="row">
+      <div class="pull-xs-right">
+        <p>Invoice #: @invoice._id.get.stringify.takeRight(5) <br/>
+        Invoice Date: @invoice.created.get.toString("MM/dd/yyyy") <br/>
+        Invoice Net: @invoice.paymentNet.toString <br/>
+        Invoice Due: @invoice.dueDate.toString("MM/dd/yyyy") </p>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <td>TO</td>
+          <td>Service Description</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <p>
+              Company Name: @vendor.companyName <br/>
+              Company Address: @vendor.companyAddress <br/>
+            </p>
+          </td>
+          <td>
+            Consulting services provided by @consultant.profiles.map(_.fullName) (consultant) to @client.companyName (client).
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br/>
+
+    <table class="table">
+      <thead>
+        <tr class="table-colored">
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Total Hours</th>
+          <th>Rate</th>
+          <th>Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>@invoice.startDate.toString("MM/dd/yyyy")</td>
+          <td>@invoice.endDate.toString("MM/dd/yyyy")</td>
+          <td>@invoice.totalHours</td>
+          <td>$@invoice.pricePerHour/Hr</td>
+          <td>$@invoice.totalCost</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br/>
+
+    <div class="row">
+      <p>
+      <b>Make all checks payable to:</b> <br/>
+      <small>Company Name: @config.getString("company.name")<br/>
+      Address: @config.getString("company.address.street"), @config.getString("company.address.city"), @config.getString("company.address.state") @config.getString("company.address.zip")<br/>
+      Bank Name: @config.getString("company.bank.name")<br/>
+      Bank Account: @config.getString("company.bank.account.number")</small>
+      </p>
+    </div>
+  </div>
+}

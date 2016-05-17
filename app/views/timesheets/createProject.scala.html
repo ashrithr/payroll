@@ -1,0 +1,75 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, projectForm: Form[forms.ProjectForm.FormData], vendors: List[Vendor], clients: List[Client], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{b4.horizontal.fieldConstructor("col-md-3","col-md-6")}
+
+@views.html.templates.mainApp(Messages("app.timesheets.projects.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+
+  <div class="card">
+  @b4.form(routes.TimesheetAdmin.createProject, 'class -> "card-block") {
+    <fieldset>
+      <legend>@Messages("project.legend")</legend>
+
+      @b4.text(projectForm("projectName"),
+        '_label -> Messages("project.name"),
+        'placeholder -> Messages("project.name"),
+        'autofocus -> true)
+
+      @b4.text(projectForm("startDate"),
+        '_label -> Messages("project.start.date.label"),
+        'placeholder -> Messages("project.start.date.placeholder"),
+        'class -> "datepicker")
+
+      @b4.text(projectForm("endDate"),
+        '_label -> Messages("project.end.date.label"),
+        'placeholder -> Messages("project.end.date.placeholder"),
+        'class -> "datepicker")
+
+      @b4.select(projectForm("preferredCurrency"),
+        options = Seq(("USD", "USD"), ("INR", "INR"), ("GBP", "GBP")),
+        '_label -> Messages("project.preferred.currency.label"),
+        'class -> "select2")
+
+      @b4.checkbox(projectForm("biWeekly"),
+        '_text -> Messages("project.biWeekly"),
+        '_value -> false)
+
+      @b4.textarea(projectForm("notes"),
+        '_label -> Messages("project.notes.label"),
+        'placeholder -> Messages("project.notes.placeholder"))
+
+      @b4.select(projectForm("vendorId"),
+        options = vendors.map(v => (v._id.get.stringify, s"${v.companyName}")),
+        '_label -> Messages("project.vendor.label"),
+        'class -> "select2")
+
+      @b4.select(projectForm("clientId"),
+        options = clients.map(c => (c._id.get.stringify, s"${c.companyName}")),
+        '_label -> Messages("project.client.label"),
+        'class -> "select2")
+
+      @b4.select(projectForm("paymentNet"),
+        options = PaymentNet.values.map(v => (v.toString, v.toString)).toSeq,
+        '_label -> Messages("project.payment.net.label"),
+        'class -> "select2")
+
+      @*<fieldset class="form-group row">
+      @defining(b4.inline.fieldConstructorSpecific) { implicit ifc =>
+        <label class="col-md-3">@Messages("project.team.member.label")</label>
+        <div class="col-md-6">
+        @b4.select(projectForm("team[0].userId"),
+          options = consultants.map(c => (c.id.toString, c.profiles.head.fullName.get)),
+          'class -> "select2")
+        @b4.text(projectForm("team[0].rate"),
+          'placeholder -> Messages("project.team.member.cost.placeholder"))
+        </div>
+      }
+      </fieldset>*@
+
+      @b4.submit('class -> "btn btn-primary"){ @Messages("project.submit") }
+    </fieldset>
+  }
+  </div>
+
+}

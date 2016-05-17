@@ -1,0 +1,76 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+@import _root_.models.User
+@import _root_.models.Role
+@import b4.vertical.fieldConstructor
+
+@(loggedUser: User, loginInfo: LoginInfo, user: Option[User], userRoleUpdateForm: Form[forms.UserRoleUpdate.FormData], roles: Seq[Role.Value])(implicit request: RequestHeader, messages:Messages)
+
+@views.html.templates.mainApp(Messages("app.title"), tab = "index", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+
+  @*User information*@
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header bg-success">
+        <b>User Information</b>
+      </div>
+      @user.map { u =>
+        <ul class="list-group">
+          <li class="list-group-item">First Name: <b>@u.profiles.map(_.firstName)</b></li>
+          <li class="list-group-item">Last Name: <b>@u.profiles.map(_.lastName)</b></li>
+          <li class="list-group-item">Full Name: <b>@u.profiles.map(_.fullName)</b></li>
+          <li class="list-group-item">Email Address: <b>@u.profiles.map(_.email)</b></li>
+          <li class="list-group-item">Email:
+            @if(u.profiles.map(_.email)) {
+              <span class="text-success"><b>Confirmed</b></span>
+            } else {
+              <span class="text-danger"><b>Not Confirmed</b></span>
+            }</li>
+          <li class="list-group-item">Role: <b>@u.role</b></li>
+        </ul>
+      }
+    </div>
+  </div>
+
+  @*User delete*@
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header bg-warning">
+        <b>Update User Role</b>
+      </div>
+      <div class="card-block">
+        <p>You could update the user role</p>
+
+        @user.map { u =>
+          @b4.form(routes.UserController.updateUserRole(u.id.toString)) {
+            <fieldset>
+              @b4.select(
+                userRoleUpdateForm("role"),
+                options = roles.map { r => (r.toString, r.toString) },
+                'value -> u.role,
+                'class -> "select2",
+                '_custom -> true
+              )
+
+              @b4.submit('class -> "btn btn-sm btn-warning-outline pull-xs-left"){ UPDATE USER }
+            </fieldset>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header bg-danger">
+        <b>Remove User</b>
+      </div>
+      <div class="card-block">
+        <p>Deleting a user has the following effects:</p>
+        <ul>
+          <li>All user content will be deleted.</li>
+        </ul>
+
+        <button class="btn btn-sm btn-danger-outline">REMOVE USER</button>
+      </div>
+    </div>
+  </div>
+
+}

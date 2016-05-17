@@ -1,0 +1,83 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+@import org.joda.time.DateTime
+
+@(loggedUser: User, loginInfo: LoginInfo, projectForm: Form[forms.ProjectForm.FormData], project: Project, vendors: List[Vendor], clients: List[Client], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{b4.horizontal.fieldConstructor("col-md-3","col-md-6")}
+
+@views.html.templates.mainApp(Messages("app.timesheets.projects.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+
+  <div class="card">
+  @b4.form(routes.TimesheetAdmin.editProject(project._id.get.stringify), 'class -> "card-block") {
+    <fieldset>
+      <legend>@Messages("project.legend")</legend>
+
+      @b4.text(projectForm("projectName"),
+        '_label -> Messages("project.name"),
+        'placeholder -> Messages("project.name"),
+        'value -> project.projectName,
+        'autofocus -> true)
+
+      @b4.text(projectForm("startDate"),
+        '_label -> Messages("project.start.date.label"),
+        'placeholder -> Messages("project.start.date.placeholder"),
+        'value -> project.startDate.getOrElse(DateTime.now).toString("MM/dd/YYYY"),
+        'class -> "datepicker")
+
+      @b4.text(projectForm("endDate"),
+        '_label -> Messages("project.end.date.label"),
+        'placeholder -> Messages("project.end.date.placeholder"),
+        'value -> project.endDate.getOrElse(DateTime.now).toString("MM/dd/YYYY"),
+        'class -> "datepicker")
+
+      @b4.select(projectForm("preferredCurrency"),
+        options = Seq(("USD", "USD"), ("INR", "INR"), ("GBP", "GBP")),
+        '_label -> Messages("project.preferred.currency.label"),
+        'value -> project.preferredCurrency,
+        'class -> "select2")
+
+      @b4.checkbox(projectForm("biWeekly"),
+        '_text -> Messages("project.biWeekly"),
+        '_value -> project.biWeekly)
+
+      @b4.textarea(projectForm("notes"),
+        '_label -> Messages("project.notes.label"),
+        'placeholder -> Messages("project.notes.placeholder"),
+        'value -> project.notes.getOrElse(""))
+
+      @b4.select(projectForm("vendorId"),
+        options = vendors.map(v => (v._id.get.stringify, s"${v.companyName}")),
+        '_label -> Messages("project.vendor.label"),
+        'value -> project.vendorId,
+        'class -> "select2")
+
+      @b4.select(projectForm("clientId"),
+        options = clients.map(c => (c._id.get.stringify, s"${c.companyName}")),
+        '_label -> Messages("project.client.label"),
+        'value -> project.clientId,
+        'class -> "select2")
+
+      @b4.select(projectForm("paymentNet"),
+        options = PaymentNet.values.map(v => (v.toString, v.toString)).toSeq,
+        '_label -> Messages("project.payment.net.label"),
+        'value -> project.paymentNet,
+        'class -> "select2")
+
+      @*
+      @b4.select(projectForm("team"),
+        options = consultants.map(c => (c.id.toString, c.profiles.head.fullName.get)),
+        '_label -> Messages("project.team.label"),
+        'class -> "select2",
+        'value -> project.team.mkString(","),
+        'multiple -> true)*@
+
+      @b4.submit('class -> "btn btn-primary"){ @Messages("project.update") }
+
+      @*<div class="post-form-opts">
+        <p>@Html(Messages("project.postForm", routes.TimesheetAdmin.editProject(project._id.get.stringify)))</p>
+      </div>*@
+    </fieldset>
+  }
+  </div>
+
+}

@@ -1,0 +1,47 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, projects: List[Project])(implicit request: RequestHeader, messages: Messages)
+
+@implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-4", "col-md-8") }
+
+@views.html.templates.mainApp(Messages("app.timesheets.projects.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+
+  <div class="spacer"></div>
+
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("timesheets.projects.admin.header")
+        <a type="button" class="btn btn-primary btn-primary-outline pull-xs-right" href="@routes.TimesheetAdmin.createProjectForm">
+          Create Project
+        </a>
+      </h3>
+      <h6 class="card-subtitle text-muted">Projects are the entities that will bind consultants to vendors and clients.</h6>
+    </div>
+    @projects match {
+      case Nil => {
+        <div class="card-block">
+          <p class="lead">No projects have yet been added!</p>
+        </div>
+      }
+      case _ => {
+        <ul class="list-group list-group-flush">
+        @projects.map { project =>
+          <li class="list-group-item">
+            <b class="list-group-item-heading">
+              <a href="@routes.TimesheetAdmin.getProject(project._id.get.stringify)">@project.projectName</a>
+              <span class="pull-xs-right">
+                <span class="label label-default timeago" date-value="@project.created"></span>
+                <span class="label label-info">@project.preferredCurrency</span>
+                <a href="@routes.TimesheetAdmin.editProject(project._id.get.stringify)"><span class="label label-primary">Edit</span></a>
+              </span>
+            </b>
+            <p class="list-group-item-text">@project.team.size members in this project.</p>
+          </li>
+        }
+        </ul>
+      }
+    }
+  </div>
+
+}
