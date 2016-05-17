@@ -12,13 +12,15 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsObject, Json, _}
 import play.api.mvc.Controller
 import services.UserService
+import utils.Mailer
 import utils.auth.{WithRole, WithUserEmail}
 
 import scala.concurrent.Future
 
 class TimesheetConsultant @Inject() (val messagesApi: MessagesApi,
   val silhouette: Silhouette[UserEnv],
-  userService: UserService)
+  userService: UserService,
+  mailer: Mailer)
   extends Controller with I18nSupport {
 
   def view(userEmail: String, date: String) = silhouette.SecuredAction((WithUserEmail(userEmail) && WithRole(Role.CONSULTANT)) || (WithRole(Role.OWNER) || WithRole(Role.ADMIN))).async { implicit request =>
@@ -76,6 +78,7 @@ class TimesheetConsultant @Inject() (val messagesApi: MessagesApi,
     timesheet.map {
       case Some(ts) =>
         Timesheet.update(ts._id.get.stringify, ts.copy(status = TimesheetStatus.SUBMITTED, submittedAt = Some(DateTime.now)))
+        mailer.timesheetSubmission(request.identity.profiles.map(_.email.get).head, ts)
         Ok(Json.obj("success" -> true, "message" -> s"Successfully updated timesheet"))
       case _ =>
         BadRequest(Json.obj("success" -> false, "message" -> s"Cannot find timesheet for the specified details"))

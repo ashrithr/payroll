@@ -20,7 +20,7 @@ object InvoiceDueNotifier {
   case object PastDue
 }
 
-class InvoiceDueNotifier @Inject()(val messagesApi: MessagesApi, mailer: Mailer, userService: UserService) extends Actor with I18nSupport {
+class InvoiceDueNotifier @Inject()(val messagesApi: MessagesApi, mailer: Mailer) extends Actor with I18nSupport {
 
   import InvoiceDueNotifier._
 
@@ -30,26 +30,20 @@ class InvoiceDueNotifier @Inject()(val messagesApi: MessagesApi, mailer: Mailer,
   }
 
   def dueToday = {
-    val admins = userService.findAll.map(_.filter(_.role == Role.ADMIN)).map(_.flatMap(_.profiles.flatMap(_.email)))
     Invoice.find(Json.obj("hidden" -> false, "paymentReceived" -> false)).map { invoices =>
       invoices.foreach { invoice =>
         if(invoice.dueDate.withTimeAtStartOfDay().isEqual(DateTime.now.withTimeAtStartOfDay())) {
-          admins.map { a =>
-            mailer.invoicesDueToday(a)
-          }
+          mailer.invoicesDueToday()
         }
       }
     }
   }
 
   def pastDue = {
-    val admins = userService.findAll.map(_.filter(_.role == Role.ADMIN)).map(_.flatMap(_.profiles.flatMap(_.email)))
     Invoice.find(Json.obj("hidden" -> false, "paymentReceived" -> false)).map { invoices =>
       invoices.foreach { invoice =>
         if(invoice.dueDate.isBefore(DateTime.now)) {
-          admins.map { a =>
-            mailer.invoicesPastDue(a)
-          }
+          mailer.invoicesPastDue()
         }
       }
     }

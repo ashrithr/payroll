@@ -91,12 +91,11 @@ class Auth @Inject() (
             for {
               authenticator <- env.authenticatorService.create(loginInfo)
               value <- env.authenticatorService.init(authenticator)
-              admins <- userService.findAll.map(_.filter(_.role == Role.ADMIN)).map(_.flatMap(_.profiles.flatMap(_.email)))
               _ <- userService.confirm(loginInfo)
               _ <- userTokenService.remove(id)
               result <- env.authenticatorService.embed(value, Redirect(routes.Application.index()))
             } yield {
-              mailer.newUserSignUp(token.email, admins)
+              mailer.newUserSignUp(token.email)
               result
             }
         }

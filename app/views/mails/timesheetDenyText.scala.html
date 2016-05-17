@@ -1,0 +1,4 @@
+@(adminEmail: String, startDate: String, endDate: String, totalHours: String)(implicit messages: Messages)
+
+@Messages("mail.notify.consultant.timesheet.deny")
+@Messages("mail.notify.consultant.timesheet.dney.details", adminEmail, startDate, endDate, totalHours)

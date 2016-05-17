@@ -15,7 +15,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 import play.api.mvc.Controller
 import services.UserService
-import utils.EnumReflector
+import utils.{EnumReflector, Mailer}
 import utils.auth.WithRole
 
 import scala.concurrent.Future
@@ -23,7 +23,8 @@ import scala.concurrent.Future
 
 class TimesheetAdmin @Inject() (val messagesApi: MessagesApi,
   val silhouette: Silhouette[UserEnv],
-  userService: UserService)
+  userService: UserService,
+  mailer: Mailer)
   extends Controller with I18nSupport {
 
   private val logger = Logger(this.getClass)
@@ -204,6 +205,12 @@ class TimesheetAdmin @Inject() (val messagesApi: MessagesApi,
           approvedBy = Some(request.identity.id.toString)
         )
       )
+      for {
+        consultant <- userService.find(ts.get.consultantId)
+      } yield {
+        // todo reformat
+        mailer.timesheetApproval(consultant.get.profiles.head.email.get, request.identity.profiles.head.email.get, ts.get)
+      }
       // TODO flash with ajax call does not seem to work, replace ajax call with simple form post request
       Redirect(routes.TimesheetAdmin.index()).flashing("success" -> "Successfully approved timesheet!")
     }
@@ -220,6 +227,12 @@ class TimesheetAdmin @Inject() (val messagesApi: MessagesApi,
           disapprovedBy = Some(request.identity.id.toString)
         )
       )
+      for {
+        consultant <- userService.find(ts.get.consultantId)
+      } yield {
+        // todo reformat
+        mailer.timesheetDenial(consultant.get.profiles.head.email.get, request.identity.profiles.head.email.get, ts.get)
+      }
       // TODO flash with ajax call does not seem to work, replace ajax call with simple form post request
       Redirect(routes.TimesheetAdmin.pendingTimesheets()).flashing("success" -> "Successfully denied timesheet!")
     }
