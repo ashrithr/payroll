@@ -1,16 +1,14 @@
 
-# Payroll
+# Time Tracking System
 
-**Payroll application**
+A generic time tracking system for consulting firms. Features include:
 
-A generic payroll system for consulting firms. Features include:
-
-* User signup/signin
+* User signup/authentication
 * Project, clients, vendors management
 * Timesheets management
 * Invoice management
 
-Leverages following frameworks:
+Built on top of following frameworks:
 
 * Play framework
 * MongoDB for database
@@ -20,3 +18,7 @@ Leverages following frameworks:
 The following dependencies should be installed and available to the classpath of this application
 
 1. [MongoDB](https://www.mongodb.org/downloads)
+
+## Future Work
+
+* Expense Management
