@@ -49,13 +49,13 @@ POST     /timesheets/save/:projectId/:userId/:date    controllers.TimesheetConsu
 POST     /timesheets/submit/:projectId/:userId/:date  controllers.TimesheetConsultant.submit(projectId: String, userId: String, date: String)
 
 # Payroll Module
-GET      /payroll/invoices                            controllers.Payroll.index()
-GET      /payroll/invoices/createForm                 controllers.Payroll.createInvoiceForm()
-POST     /payroll/invoices                            controllers.Payroll.createInvoice()
-GET      /payroll/invoices/generate/:invoiceId        controllers.Payroll.generateInvoice(invoiceId: String)
-PUT      /payroll/invoices/hide/:invoiceId            controllers.Payroll.hideInvoice(invoiceId: String)
-GET      /payroll/invoices/due                        controllers.Payroll.invoicesDue
-PUT      /payroll/invoices/paymentMade/:invoiceId     controllers.Payroll.paymentReceived(invoiceId: String)
+GET      /invoices                                    controllers.InvoiceController.index()
+GET      /invoices/createForm                         controllers.InvoiceController.createInvoiceForm()
+POST     /invoices                                    controllers.InvoiceController.createInvoice()
+GET      /invoices/generate/:invoiceId                controllers.InvoiceController.generateInvoice(invoiceId: String)
+PUT      /invoices/hide/:invoiceId                    controllers.InvoiceController.hideInvoice(invoiceId: String)
+GET      /invoices/due                                controllers.InvoiceController.invoicesDue
+PUT      /invoices/paymentMade/:invoiceId             controllers.InvoiceController.paymentReceived(invoiceId: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET      /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)

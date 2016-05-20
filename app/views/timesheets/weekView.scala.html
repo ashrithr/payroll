@@ -1,7 +1,7 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 @import org.joda.time.DateTime
 
-@(loggedUser: User, loginInfo: LoginInfo, date: DateTime, projects: List[Project], containsNone: Boolean, timesheets: List[Timesheet], timesheetDetails: List[TimesheetDetail], users: List[User])(implicit request: RequestHeader, messages: Messages)
+@(loggedUser: User, loginInfo: LoginInfo, date: DateTime, projects: List[Project], containsNone: Boolean, timesheets: List[Timesheet], timesheetDetails: List[TimesheetDetail], users: List[User])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @import org.joda.time.Interval; var dateRange = new Interval(DateTime.now, DateTime.now);
 @import org.joda.time.DateTime; val weekStart = date.dayOfWeek().withMinimumValue(); val weekEnd = date.dayOfWeek().withMaximumValue();

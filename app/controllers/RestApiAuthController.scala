@@ -6,14 +6,15 @@ import com.mohiva.play.silhouette.api.util.Credentials
 import com.mohiva.play.silhouette.api.{Environment, LoginEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
+import com.typesafe.config.Config
 import models.Token
-import modules.UserEnv
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import services.UserService
 import play.api.libs.concurrent.Execution.Implicits._
+import utils.auth.UserEnv
 
 import scala.concurrent.Future
 
@@ -21,6 +22,7 @@ class RestApiAuthController @Inject() (
   val messagesApi: MessagesApi,
   val env: Environment[UserEnv],
   val silhouette: Silhouette[UserEnv],
+  val config: Config,
   credentialsProvider: CredentialsProvider,
   userService: UserService)
   extends Controller with I18nSupport {

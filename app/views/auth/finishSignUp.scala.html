@@ -1,4 +1,4 @@
-@(profile:Profile)(implicit request: RequestHeader, messages:Messages)
+@(profile:Profile)(implicit request: RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 @templates.mainAuth(Messages("finishSignUp.title"), tab="signup") {
   <p>@Messages("finishSignUp.thanks", profile.fullName.get)</p>

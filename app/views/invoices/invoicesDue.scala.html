@@ -1,7 +1,7 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 @import org.joda.time.DateTime
 
-@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultants: List[User])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @invoiceScripts = {
   <script type="text/javascript">
@@ -9,7 +9,7 @@
       $("#paymentMadeInvoice-@invoice._id.get.stringify").click(function() {
         $.ajax({
           type: "PUT",
-          url: "/payroll/invoices/paymentMade/@invoice._id.get.stringify",
+          url: "/invoices/paymentMade/@invoice._id.get.stringify",
           success: function(data){
             location.reload();
           },
@@ -22,15 +22,15 @@
   </script>
 }
 
-@views.html.templates.mainApp(Messages("app.payroll.invoices.due.title"), tab = "payroll", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), invoiceScripts) {
+@views.html.templates.mainApp(Messages("app.invoices.due.title"), tab = "invoices", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), invoiceScripts) {
 
   <div class="card">
     <div class="card-block">
       <h3 class="card-title text-success">
-        @Messages("payroll.invoices.due.header")
+        @Messages("invoices.due.header")
       </h3>
       <h6 class="card-subtitle text-muted">
-        @Messages("payroll.invoices.due.subHeader")
+        @Messages("invoices.due.subHeader")
       </h6>
     </div>
     @invoices match {

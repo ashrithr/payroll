@@ -4,17 +4,19 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.api.actions.SecuredErrorHandler
-import modules.UserEnv
+import com.typesafe.config.Config
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json._
 import models.User._
 import play.api.mvc.{Controller, RequestHeader}
+import utils.auth.UserEnv
 
 import scala.concurrent.Future
 
 class RestApi @Inject() (
   val messagesApi: MessagesApi,
-  val silhouette: Silhouette[UserEnv])
+  val silhouette: Silhouette[UserEnv],
+  val config: Config)
   extends Controller with I18nSupport {
 
   val errorHandler = new SecuredErrorHandler {

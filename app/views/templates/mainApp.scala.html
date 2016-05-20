@@ -1,7 +1,7 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 
 @import org.joda.time.DateTime
-@(title: String, tab: String = "", loggedUser: Option[User], loginInfo:Option[LoginInfo] = None, scripts: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages:Messages)
+@(title: String, tab: String = "", loggedUser: Option[User], loginInfo:Option[LoginInfo] = None, scripts: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 @navbarContent = {
   <ul class="nav navbar-nav">
@@ -30,11 +30,11 @@
             <a class="dropdown-item" href="@routes.TimesheetAdmin.pendingTimesheets">Pending Timesheets</a>
           </div>
         </li>
-        <li class="nav-item btn-group @("active".when(tab == "payroll"))">
-          <a class="dropdown-toggle nav-link" type="button" id="dropdownMenuPayroll" data-toggle="dropdown" aria-haspopup="true"  aria-expanded="false">Payroll</a>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuPayroll">
-            <a class="dropdown-item" href="@routes.Payroll.index">Invoices</a>
-            <a class="dropdown-item" href="@routes.Payroll.invoicesDue">Invoices Due</a>
+        <li class="nav-item btn-group @("active".when(tab == "invoices"))">
+          <a class="dropdown-toggle nav-link" type="button" id="dropdownMenuInvoices" data-toggle="dropdown" aria-haspopup="true"  aria-expanded="false">Invoices</a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuInvoices">
+            <a class="dropdown-item" href="@routes.InvoiceController.index">Invoices</a>
+            <a class="dropdown-item" href="@routes.InvoiceController.invoicesDue">Invoices Due</a>
           </div>
         </li>
       } else {

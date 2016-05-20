@@ -1,6 +1,6 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 
-@(loggedUser: User, loginInfo: LoginInfo, timesheets: List[Timesheet], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+@(loggedUser: User, loginInfo: LoginInfo, timesheets: List[Timesheet], consultants: List[User])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @timesheetScripts = {
   <script type="text/javascript">

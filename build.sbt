@@ -1,4 +1,4 @@
-name := """payroll-mongo"""
+name := """time-tracking"""
 
 version := "1.0-SNAPSHOT"
 
@@ -11,11 +11,12 @@ ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
 resolvers ++= Seq(
   "Atlassian Releases" at "https://maven.atlassian.com/public/",
   "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
-  Resolver.sonatypeRepo("snapshots")
+  Resolver.sonatypeRepo("snapshots"),
+  Resolver.jcenterRepo
 )
 
 libraryDependencies ++= Seq(
-  jdbc,
+  filters,
   cache,
   ws,
   "com.typesafe.play" %% "play-mailer" % "5.0.0-M1",
@@ -31,7 +32,7 @@ libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.5.0",
   "org.webjars" % "bootstrap" % "4.0.0-alpha.2" exclude("org.webjars", "jquery"),
   "org.webjars" % "jquery" % "2.2.1",
-  "org.webjars" % "font-awesome" % "4.5.0",
+  "org.webjars" % "font-awesome" % "4.6.1",
   "org.webjars" % "momentjs" % "2.12.0",
   "org.webjars" % "bootstrap-datepicker" % "1.5.0-1" exclude("org.webjars", "bootstrap"),
   "org.webjars" % "font-awesome" % "4.6.1",

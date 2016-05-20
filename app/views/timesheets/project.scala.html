@@ -1,6 +1,6 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 
-@(loggedUser: User, loginInfo: LoginInfo, project: Option[Project], vendor: Option[Vendor], client: Option[Client], users: List[User])(implicit request: RequestHeader, messages: Messages)
+@(loggedUser: User, loginInfo: LoginInfo, project: Option[Project], vendor: Option[Vendor], client: Option[Client], users: List[User])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @projectScripts = {
   <script type="text/javascript">

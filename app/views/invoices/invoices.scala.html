@@ -1,5 +1,5 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
-@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultants: List[User])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @invoiceScripts = {
   <script type="text/javascript">
@@ -7,7 +7,7 @@
       $("#hideInvoice-@invoice._id.get.stringify").click(function() {
         $.ajax({
           type: "PUT",
-          url: "/payroll/invoices/hide/@invoice._id.get.stringify",
+          url: "/invoices/hide/@invoice._id.get.stringify",
           success: function(data){
             location.reload();
           },
@@ -20,15 +20,15 @@
   </script>
 }
 
-@views.html.templates.mainApp(Messages("app.payroll.invoices.title"), tab = "payroll", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), invoiceScripts) {
+@views.html.templates.mainApp(Messages("app.invoices.title"), tab = "invoices", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), invoiceScripts) {
 
   <div class="spacer"></div>
 
   <div class="card">
     <div class="card-block">
       <h3 class="card-title text-success">
-        @Messages("payroll.invoices.index.header")
-        <a type="button" class="btn btn-primary btn-primary-outline pull-xs-right" href="@routes.Payroll.createInvoiceForm">
+        @Messages("invoices.index.header")
+        <a type="button" class="btn btn-primary btn-primary-outline pull-xs-right" href="@routes.InvoiceController.createInvoiceForm">
           Create Invoice
         </a>
       </h3>
@@ -48,7 +48,7 @@
               Invoice #@invoice._id.get.stringify.takeRight(5)
               <span class="pull-xs-right">
                 <span class="label label-default timeago" date-value="@invoice.created"></span>
-                <a href="@routes.Payroll.generateInvoice(invoice._id.get.stringify)"><span class="label label-primary">Generate</span></a>
+                <a href="@routes.InvoiceController.generateInvoice(invoice._id.get.stringify)"><span class="label label-primary">Generate</span></a>
                 <a href="#" id="hideInvoice-@invoice._id.get.stringify"><span class="label label-warning">Hide</span></a>
               </span>
             </b>

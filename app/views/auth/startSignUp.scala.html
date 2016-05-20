@@ -1,4 +1,4 @@
-@(signUpForm: Form[forms.SignUpForm.SignUpData])(implicit request: RequestHeader, messages:Messages)
+@(signUpForm: Form[forms.SignUpForm.SignUpData])(implicit request: RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 @implicitFieldConstructor = @{b4.horizontal.fieldConstructor("col-md-3","col-md-6")}
 

@@ -1,6 +1,7 @@
 package modules
 
 import com.google.inject.{AbstractModule, Provides}
+import com.mohiva.play.silhouette.api.actions.{SecuredErrorHandler, UnsecuredErrorHandler}
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.services.{AuthenticatorService, AvatarService, IdentityService}
 import com.mohiva.play.silhouette.api.util._
@@ -12,13 +13,14 @@ import com.mohiva.play.silhouette.impl.util._
 import com.mohiva.play.silhouette.password.BCryptPasswordHasher
 import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
+import com.typesafe.config.{Config, ConfigFactory}
 import daos.impl.{PasswordInfoDaoImpl, UserDaoImpl, UserTokenDaoImpl}
 import daos.{UserDao, UserTokenDao}
 import models.User
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 import net.codingwell.scalaguice.ScalaModule
-import play.api.Configuration
+import play.api.{Configuration, Play}
 import play.api.libs.concurrent.AkkaGuiceSupport
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.mailer._
@@ -26,6 +28,7 @@ import play.api.libs.ws.WSClient
 import services.UserService
 import tasks.{InvoiceDueNotifier, Scheduler}
 import utils.Mailer
+import utils.auth.{CustomSecuredErrorHandler, CustomUnsecuredErrorHandler, UserEnv}
 
 /**
   * The Guice module which wires all Silhouette dependencies.
@@ -36,6 +39,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule with AkkaGuiceSup
     * Configures the module.
     */
   def configure() {
+    bind[Silhouette[UserEnv]].to[SilhouetteProvider[UserEnv]]
+    // TODO: A binding to com.mohiva.play.silhouette.api.actions.SecuredErrorHandler was already configured
+    /*bind[UnsecuredErrorHandler].to[CustomUnsecuredErrorHandler]
+    bind[SecuredErrorHandler].to[CustomSecuredErrorHandler]*/
     bind[IdentityService[User]].to[UserService]
     bind[UserDao].to[UserDaoImpl]
     bind[UserTokenDao].to[UserTokenDaoImpl]
@@ -46,8 +53,8 @@ class SilhouetteModule extends AbstractModule with ScalaModule with AkkaGuiceSup
     bind[FingerprintGenerator].toInstance(new DefaultFingerprintGenerator(false))
     bind[EventBus].toInstance(EventBus())
     bind[Clock].toInstance(Clock())
-    bind[Silhouette[UserEnv]].to[SilhouetteProvider[UserEnv]]
 
+    bind[Config].toInstance(ConfigFactory.load())
     bindActor[InvoiceDueNotifier]("invoice-due-notifier")
     bind(classOf[Scheduler]).asEagerSingleton()
   }
@@ -68,7 +75,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule with AkkaGuiceSup
     * @return Mailer service.
     */
   @Provides
-  def provideMailer(mailerClient:MailerClient) = new Mailer(mailerClient)
+  def provideMailer(mailerClient:MailerClient, userService: UserService) = new Mailer(mailerClient, userService)
 
   /**
     * Provides the Silhouette environment.

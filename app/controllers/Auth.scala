@@ -14,16 +14,17 @@ import com.mohiva.play.silhouette.api.services.AvatarService
 import com.mohiva.play.silhouette.api.util.{Credentials, PasswordHasher}
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.providers._
+import com.typesafe.config.Config
 import forms.{PasswordRecovery, SignInForm, SignUpForm}
 import play.api._
 import play.api.mvc._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits._
 import models.{Profile, Role, User, UserToken}
-import modules.UserEnv
 import services.{UserService, UserTokenService}
 import utils.Mailer
 import org.joda.time.DateTime
+import utils.auth.UserEnv
 
 class Auth @Inject() (
   val messagesApi: MessagesApi,
@@ -36,7 +37,7 @@ class Auth @Inject() (
   avatarService: AvatarService,
   passwordHasher: PasswordHasher,
   configuration: Configuration,
-  mailer: Mailer) extends Controller with I18nSupport {
+  mailer: Mailer)(implicit config: Config) extends Controller with I18nSupport {
 
   def startSignUp = silhouette.UserAwareAction.async { implicit request =>
     Future.successful(request.identity match {

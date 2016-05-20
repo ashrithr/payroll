@@ -1,6 +1,6 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 
-@(loggedUser: User, loginInfo: LoginInfo, createContactForm: Form[forms.ContactForm.FormData], createClientForm: Form[forms.ClientForm.FormData], createVendorForm: Form[forms.VendorForm.FormData], contacts: List[Contact], clients: List[Client], vendors: List[Vendor])(implicit request: RequestHeader, messages: Messages)
+@(loggedUser: User, loginInfo: LoginInfo, createContactForm: Form[forms.ContactForm.FormData], createClientForm: Form[forms.ClientForm.FormData], createVendorForm: Form[forms.VendorForm.FormData], contacts: List[Contact], clients: List[Client], vendors: List[Vendor])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-4", "col-md-8") }
 

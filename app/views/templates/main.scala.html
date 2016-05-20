@@ -1,4 +1,4 @@
-@(title: String, navbarContent: Html = Html(""), scripts: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages:Messages)
+@(title: String, navbarContent: Html = Html(""), scripts: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 <!DOCTYPE html>
 <html>
@@ -16,7 +16,7 @@
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
   </head>
   <body>
-    <nav class="navbar navbar-fixed-top navbar-dark bg-success">
+    <nav class="navbar navbar-fixed-top navbar-@config.getString("company.nav-bar.text-color")" style="background-color: @config.getString("company.nav-bar.background-color");">
       <button type="button" class="navbar-toggler hidden-sm-up pull-xs-right" data-toggle="collapse" data-target="#collapsing-navbar">
           &#9776;
       </button>

@@ -1,4 +1,4 @@
-@(title: String, tab: String = "")(content: Html)(implicit request: RequestHeader, messages:Messages)
+@(title: String, tab: String = "")(content: Html)(implicit request: RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 @navbarContent = {
   <ul class="nav navbar-nav">

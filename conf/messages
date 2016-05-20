@@ -1,6 +1,6 @@
-app.title=Payroll
+app.title=Time Tracking
 
-navbar.welcome=Payroll
+navbar.welcome=Time Tracking
 navbar.toggle.nav=Toggle navigation
 navbar.index=Index
 navbar.profile=My Profile
@@ -10,7 +10,7 @@ navbar.signin=Sign In
 navbar.signup = Sign Up
 navbar.none=None
 
-index.header=Welcome to Plaroll System
+index.header=Welcome to Time Tracking System
 index.logged=Welcome <span class="text-success">{0}</span>, you are logged in. Go to <a href="{1}">My Profile</a> to see your profile info.
 index.signOut=You can also <a href="{0}">sign out</a>.
 index.notLogged=You aren''t logged in, you can <a href="{0}">sign in</a> or <a href="{1}">sign up</a> to create your account.

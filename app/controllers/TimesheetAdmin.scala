@@ -4,9 +4,9 @@ import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
+import com.typesafe.config.Config
 import forms.{ClientForm, ContactForm, ProjectForm, VendorForm}
 import models._
-import modules.UserEnv
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import play.api.Logger
@@ -16,7 +16,7 @@ import play.api.libs.json._
 import play.api.mvc.Controller
 import services.UserService
 import utils.{EnumReflector, Mailer}
-import utils.auth.WithRole
+import utils.auth.{UserEnv, WithRole}
 
 import scala.concurrent.Future
 
@@ -24,7 +24,7 @@ import scala.concurrent.Future
 class TimesheetAdmin @Inject() (val messagesApi: MessagesApi,
   val silhouette: Silhouette[UserEnv],
   userService: UserService,
-  mailer: Mailer)
+  mailer: Mailer)(implicit config: Config)
   extends Controller with I18nSupport {
 
   private val logger = Logger(this.getClass)

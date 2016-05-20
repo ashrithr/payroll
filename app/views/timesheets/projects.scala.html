@@ -1,6 +1,6 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 
-@(loggedUser: User, loginInfo: LoginInfo, projects: List[Project])(implicit request: RequestHeader, messages: Messages)
+@(loggedUser: User, loginInfo: LoginInfo, projects: List[Project])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-4", "col-md-8") }
 

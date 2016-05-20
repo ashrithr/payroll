@@ -4,21 +4,21 @@ import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
+import com.typesafe.config.Config
 import daos.UserDao
 import forms.UserRoleUpdate
 import models.Role
-import modules.UserEnv
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Controller
 import services.UserService
-import utils.auth.WithRole
+import utils.auth.{UserEnv, WithRole}
 
 class UserController @Inject() (val messagesApi: MessagesApi,
   val silhouette: Silhouette[UserEnv],
-  userDao: UserDao,
-  userService: UserService)
+  val userDao: UserDao,
+  val userService: UserService)(implicit config: Config)
   extends Controller with I18nSupport {
 
   private val logger = Logger(this.getClass)

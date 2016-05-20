@@ -1,4 +1,4 @@
-@()(implicit request: RequestHeader, messages:Messages)
+@()(implicit request: RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 @views.html.templates.main(Messages("error.notFound")) {
   <h4>@Messages("error.notFound")</h4>

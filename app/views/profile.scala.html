@@ -2,7 +2,7 @@
 @import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 @import _root_.models.User
 
-@(loggedUser:User, loginInfo:LoginInfo)(implicit request:RequestHeader,messages:Messages)
+@(loggedUser:User, loginInfo:LoginInfo)(implicit request:RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 @linkedIds = @{loggedUser.profiles.map(_.loginInfo.providerID)}
 

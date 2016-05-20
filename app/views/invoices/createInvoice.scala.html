@@ -1,13 +1,13 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 
-@(loggedUser: User, loginInfo: LoginInfo, invoiceForm: Form[forms.InvoiceForm.FormData], projects: List[Project], consultants: List[User])(implicit request: RequestHeader, messages: Messages)
+@(loggedUser: User, loginInfo: LoginInfo, invoiceForm: Form[forms.InvoiceForm.FormData], projects: List[Project], consultants: List[User])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @implicitFieldConstructor = @{b4.horizontal.fieldConstructor("col-md-3","col-md-6")}
 
-@views.html.templates.mainApp(Messages("app.payroll.invoices.title"), tab = "payroll", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+@views.html.templates.mainApp(Messages("app.invoices.title"), tab = "invoices", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
 
   <div class="card">
-  @b4.form(routes.Payroll.createInvoice, 'class -> "card-block") {
+  @b4.form(routes.InvoiceController.createInvoice, 'class -> "card-block") {
 
     <fieldset>
       <legend>@Messages("invoice.legend")</legend>

@@ -3,8 +3,8 @@ package controllers
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
+import com.typesafe.config.Config
 import models._
-import modules.UserEnv
 import org.joda.time.{DateTime, Interval}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -13,14 +13,14 @@ import play.api.libs.json.{JsObject, Json, _}
 import play.api.mvc.Controller
 import services.UserService
 import utils.Mailer
-import utils.auth.{WithRole, WithUserEmail}
+import utils.auth.{UserEnv, WithRole, WithUserEmail}
 
 import scala.concurrent.Future
 
 class TimesheetConsultant @Inject() (val messagesApi: MessagesApi,
   val silhouette: Silhouette[UserEnv],
-  userService: UserService,
-  mailer: Mailer)
+  val userService: UserService,
+  val mailer: Mailer)(implicit config: Config)
   extends Controller with I18nSupport {
 
   def view(userEmail: String, date: String) = silhouette.SecuredAction((WithUserEmail(userEmail) && WithRole(Role.CONSULTANT)) || (WithRole(Role.OWNER) || WithRole(Role.ADMIN))).async { implicit request =>

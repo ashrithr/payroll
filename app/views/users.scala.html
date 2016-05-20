@@ -1,7 +1,7 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 @import _root_.models.User
 
-@(loggedUser: User, loginInfo: LoginInfo, users: List[User])(implicit request: RequestHeader, messages:Messages)
+@(loggedUser: User, loginInfo: LoginInfo, users: List[User])(implicit request: RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 @views.html.templates.mainApp(Messages("app.title"), tab = "users", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
   @*Core*@

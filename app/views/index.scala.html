@@ -1,7 +1,6 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
-@import _root_.models.User
 
-@(loggedUser: Option[User], loginInfo: Option[LoginInfo])(implicit request: RequestHeader, messages: Messages)
+@(loggedUser: Option[User], loginInfo: Option[LoginInfo])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @views.html.templates.mainApp(Messages("app.title"), tab = "index", loggedUser = loggedUser, loginInfo = loginInfo) {
   <h2 class="text-primary">@Messages("index.header")</h2>
@@ -14,14 +13,14 @@
     @Html(Messages("index.resetPassword", routes.Auth.startResetPassword))
   }
   </p>
-  <hr/>
+  @*<hr/>
   <p class="lead">@Messages("index.restProfile")</p>
-  <button class="btn btn-default" onclick="fetchProfile()">@Messages("index.fetchProfile")</button>
+  <button class="btn btn-default" onclick="fetchProfile()">@Messages("index.fetchProfile")</button>*@
 }
 
 @views.html.dialog()
 
-<script type="text/javascript">
+@*<script type="text/javascript">
   function fetchProfile() {
     $.ajax("@routes.RestApi.profile", {
       accept: {json:"application/json"},
@@ -63,5 +62,5 @@
     $('#profileData').show();
     $('#profileModal').modal()
   }
-</script>
+</script>*@
 
