@@ -3,8 +3,7 @@
 
 @(loggedUser: User, loginInfo: LoginInfo, date: DateTime, projects: List[Project], containsNone: Boolean, timesheets: List[Timesheet], timesheetDetails: List[TimesheetDetail], users: List[User])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
-@import org.joda.time.Interval; var dateRange = new Interval(DateTime.now, DateTime.now);
-@import org.joda.time.DateTime; val weekStart = date.dayOfWeek().withMinimumValue(); val weekEnd = date.dayOfWeek().withMaximumValue();
+@import org.joda.time.Interval; var dateRange = new Interval(DateTime.now, DateTime.now); val weekStart = date.dayOfWeek().withMinimumValue(); val weekEnd = date.dayOfWeek().withMaximumValue();
 
 @weekViewScripts = {
   <script type="text/javascript">
@@ -242,6 +241,9 @@
                   }
                   case TimesheetStatus.SUBMITTED => {
                     <small class="text-primary">Submitted <span class="timeago" date-value="@timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.submittedAt"></span>. Awaiting approval.</small>
+                  }
+                  case TimesheetStatus.NOT_SUBMITTED => {
+                    <small class="text-muted">Not Submitted.</small>
                   }
                   case TimesheetStatus.APPROVED => {
                     <small class="text-success">Approved <span class="timeago" date-value="@timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.approvedAt"></span>, by @users.find(_.id.toString == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.approvedBy.get).get.profiles.head.fullName</small>
