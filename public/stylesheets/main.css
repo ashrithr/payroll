@@ -44,6 +44,14 @@ body.modal-open {
     height: 25px;
 }
 
+.help-block {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #737373;
+    font-size: 80%;
+}
+
 /*
  * Off Canvas at medium breakpoint
  * --------------------------------------------------
