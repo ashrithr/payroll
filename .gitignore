@@ -1,3 +1,4 @@
+/conf/production.conf
 /node_modules
 /random.js
 logs
