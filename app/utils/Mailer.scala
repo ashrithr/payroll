@@ -17,7 +17,6 @@ class Mailer @Inject() (mailer:MailerClient, userService: UserService) {
   val config: Config = ConfigFactory.load()
   val from = config.as[String]("play.mailer.from")
   val replyTo = config.as[Option[String]]("play.mailer.reply")
-  val admins = userService.findAll.map(_.filter(_.role == Role.ADMIN)).map(_.flatMap(_.profiles.flatMap(_.email)))
 
   def sendEmailAsync(recipients:String*)(subject:String, bodyHtml:Option[String], bodyText:Option[String]) = {
     Future {
@@ -31,6 +30,18 @@ class Mailer @Inject() (mailer:MailerClient, userService: UserService) {
     val email = Email(subject = subject, from = from, to = recipients, bodyHtml = bodyHtml, bodyText = bodyText, replyTo = replyTo)
     mailer.send(email)
     ()
+  }
+
+  def sendAdmins(subject: String, bodyHtml: Option[String], bodyText: Option[String]) = {
+    userService.findAll.map(_.filter(u => u.role == Role.ADMIN || u.role == Role.OWNER)).map(_.flatMap(_.profiles.flatMap(_.email))) map { admins =>
+      if (admins.nonEmpty) {
+        sendEmailAsync(admins:_*)(
+          subject = subject,
+          bodyHtml = bodyHtml,
+          bodyText = bodyText
+        )
+      }
+    }
   }
 
   def welcome(profile:Profile, link:String)(implicit messages:Messages) = {
@@ -52,43 +63,35 @@ class Mailer @Inject() (mailer:MailerClient, userService: UserService) {
   /*Admin notifications*/
 
   def newUserSignUp(user: String)(implicit messages: Messages) = {
-    admins map { a =>
-      sendEmailAsync(a:_*)(
-        subject = Messages("mail.notify.admin.new.user.subject"),
-        bodyHtml = Some(views.html.mails.newUserSignUp(user).toString),
-        bodyText = Some(views.html.mails.newUserSignUpText(user).toString)
-      )
-    }
+    sendAdmins(
+      subject = Messages("mail.notify.admin.new.user.subject"),
+      bodyHtml = Some(views.html.mails.newUserSignUp(user).toString),
+      bodyText = Some(views.html.mails.newUserSignUpText(user).toString)
+    )
   }
 
   def invoicesDueToday()(implicit messages: Messages) = {
-    admins map { a =>
-      sendEmailAsync(a:_*)(
-        subject = Messages("mail.notify.admin.invoices.due.today.subject"),
-        bodyHtml = Some(views.html.mails.invoicesDueToday().toString),
-        bodyText = Some(views.html.mails.invoicesDueTodayText().toString)
-      )
-    }
+    sendAdmins(
+      subject = Messages("mail.notify.admin.invoices.due.today.subject"),
+      bodyHtml = Some(views.html.mails.invoicesDueToday().toString),
+      bodyText = Some(views.html.mails.invoicesDueTodayText().toString)
+    )
   }
 
   def invoicesPastDue()(implicit messages: Messages) = {
-    admins map { a =>
-      sendEmailAsync(a:_*)(
-        subject = Messages("mail.notify.admin.invoices.past.due.subject"),
-        bodyHtml = Some(views.html.mails.invoicesPastDue().toString),
-        bodyText = Some(views.html.mails.invoicesPastDueText().toString)
-      )
-    }
+    sendAdmins(
+      subject = Messages("mail.notify.admin.invoices.past.due.subject"),
+      bodyHtml = Some(views.html.mails.invoicesPastDue().toString),
+      bodyText = Some(views.html.mails.invoicesPastDueText().toString)
+    )
   }
 
   def timesheetSubmission(user: String, timesheet: Timesheet)(implicit messages: Messages) = {
-    admins map { a =>
-      sendEmailAsync(a: _*)(
-        subject = Messages("mail.notify.admin.timesheet.submit.subject"),
-        bodyHtml = Some(views.html.mails.timesheetSubmit(user, timesheet.weekStart.toString("MM/dd/yyyy"), timesheet.weekEnd.toString("MM/dd/yyyy"), timesheet.totalHours.toString).toString()),
-        bodyText = Some(views.html.mails.timesheetSubmitText(user, timesheet.weekStart.toString("MM/dd/yyyy"), timesheet.weekEnd.toString("MM/dd/yyyy"), timesheet.totalHours.toString).toString())
-      )
-    }
+    sendAdmins(
+      subject = Messages("mail.notify.admin.timesheet.submit.subject"),
+      bodyHtml = Some(views.html.mails.timesheetSubmit(user, timesheet.weekStart.toString("MM/dd/yyyy"), timesheet.weekEnd.toString("MM/dd/yyyy"), timesheet.totalHours.toString).toString()),
+      bodyText = Some(views.html.mails.timesheetSubmitText(user, timesheet.weekStart.toString("MM/dd/yyyy"), timesheet.weekEnd.toString("MM/dd/yyyy"), timesheet.totalHours.toString).toString())
+    )
   }
 
   /** Consultant Notifications */

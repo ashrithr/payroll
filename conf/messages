@@ -1,6 +1,6 @@
-app.title=Time Tracking
+app.title=Time Tracker
 
-navbar.welcome=Time Tracking
+navbar.welcome=Time Tracker
 navbar.toggle.nav=Toggle navigation
 navbar.index=Index
 navbar.profile=My Profile
@@ -83,17 +83,74 @@ error.profileError=Error getting profile data
 error.profileUnauthenticated=Can't access profile information: must authenticate first.
 error.profileUnauthorized=Can't access profile information: you don't have authorization to view.
 
-mail.welcome.subject=Welcome
-mail.welcome.hi=Hello, {0}!
-mail.welcome.instructions=Thanks for signing up. Just go to the following url to activate you account.
+#
+# Mails
+#
 
-mail.reset.subject=Reset password
+# Welcome Mail
+mail.welcome.subject=[Time Tracker] Welcome
+mail.welcome.hi=Hello, {0}!
+mail.welcome.instructions=Thanks for signing up at Time Tracker System. Just go to the following url to activate you account.
+
+# Password Reset Mail
+mail.reset.subject=[Time Tracker] Reset password
 mail.reset.hi=Hello, {0}!
 mail.reset.instructions=We have received a request to reset your password. Just go to the following url to proceed.
+
+# New user signup Mail
+mail.notify.admin.new.user.subject=[Time Tracker] New User SignUp
+mail.notify.admin.new.signup=Hello, Admins!
+mail.notify.admin.new.signup.details=There is a new user sign up ({0}). Take some time to associate this new user a role to get him/her started.
+
+# Invoice due Mail
+mail.notify.admin.invoices.due.today.subject=[Time Tracker] Invoice Due Today
+mail.notify.admin.invoices.due.today=Hello, Admins!
+mail.notify.admin.invoices.due.today.details=There is an invoice due today. Take some time to followup on the payment details, if this is already taken care off mark this invoice as paid.
+
+# Invoice past due Mail
+mail.notify.admin.invoices.past.due.subject=[Time Tracker] Invoice Past Due
+mail.notify.admin.invoices.past.due=Hello, Admins!
+mail.notify.admin.invoices.past.due.details=There is invoices past due. Take some time to followup on the payment details, if these are already taken care off mark them as paid.
+
+# Timesheet submit Mail
+mail.notify.admin.timesheet.submit.subject=[Time Tracker] Timesheet Submission
+mail.notify.admin.timesheet.submit=Hello, Admins!
+mail.notify.admin.timesheet.submit.details={0} has submitted a timesheet for the week ({1}-{2}) of total hours: {3}.
+
+# Timesheet approve Mail
+mail.notify.consultant.timesheet.approve.subject=[Time Tracker] Timesheet Approval
+mail.notify.consultant.timesheet.approve=Hello,
+mail.notify.consultant.timesheet.approve.details={0} has approved your timesheet submission for the week of ({1}-{2}) of total hours: {3}.
+
+# Timesheet disapprove Mail
+mail.notify.consultant.timesheet.deny.subject=[Time Tracker] Timesheet Denial
+mail.notify.consultant.timesheet.deny=Hello,
+mail.notify.consultant.timesheet.deny.details={0} has denied your timesheet submission for the week of ({1}-{2}) of total hours: {3}.
+
+#
+# Users
+#
 
 users.card.title=Users
 users.card.subTitle=Manage users and roles
 users.roleEdit.model.title=Update User Role
+
+user.information.header=User Information
+user.information.firstName=First Name
+user.information.lastName= Last Name
+user.information.fullName=Full Name
+user.information.email=Email Address
+user.information.emailConfirmed=Email
+user.information.role=Role
+
+user.update.header=Update User Role
+user.update.description=You could update the user role
+user.update.submit=UPDATE USER
+
+user.remove.header=Remove User
+user.remove.description=Deleting a user has the following effects
+user.remove.description.list.1=All user content will be deleted.
+user.remove.submit=REMOVE USER
 
 #
 # Timesheets

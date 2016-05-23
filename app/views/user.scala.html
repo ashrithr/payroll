@@ -11,21 +11,21 @@
   <div class="col-sm-6">
     <div class="card">
       <div class="card-header bg-success">
-        <b>User Information</b>
+        <b>@Messages("user.information.header")</b>
       </div>
       @user.map { u =>
         <ul class="list-group">
-          <li class="list-group-item">First Name: <b>@u.profiles.map(_.firstName)</b></li>
-          <li class="list-group-item">Last Name: <b>@u.profiles.map(_.lastName)</b></li>
-          <li class="list-group-item">Full Name: <b>@u.profiles.map(_.fullName)</b></li>
-          <li class="list-group-item">Email Address: <b>@u.profiles.map(_.email)</b></li>
-          <li class="list-group-item">Email:
-            @if(u.profiles.map(_.email)) {
+          <li class="list-group-item">@Messages("user.information.firstName")First Name: <b>@u.profiles.map(_.firstName)</b></li>
+          <li class="list-group-item">@Messages("user.information.lastName")Last Name: <b>@u.profiles.map(_.lastName)</b></li>
+          <li class="list-group-item">@Messages("user.information.fullName")Full Name: <b>@u.profiles.map(_.fullName)</b></li>
+          <li class="list-group-item">@Messages("user.information.email")Email Address: <b>@u.profiles.map(_.email)</b></li>
+          <li class="list-group-item">@Messages("user.information.emailConfirmed")Email:
+            @if(u.profiles.map(_.confirmed)) {
               <span class="text-success"><b>Confirmed</b></span>
             } else {
               <span class="text-danger"><b>Not Confirmed</b></span>
             }</li>
-          <li class="list-group-item">Role: <b>@u.role</b></li>
+          <li class="list-group-item">@Messages("user.information.role")Role: <b>@u.role</b></li>
         </ul>
       }
     </div>
@@ -35,10 +35,10 @@
   <div class="col-sm-6">
     <div class="card">
       <div class="card-header bg-warning">
-        <b>Update User Role</b>
+        <b>@Messages("user.update.header")</b>
       </div>
       <div class="card-block">
-        <p>You could update the user role</p>
+        <p>@Messages("user.update.description")</p>
 
         @user.map { u =>
           @b4.form(routes.UserController.updateUserRole(u.id.toString)) {
@@ -51,7 +51,7 @@
                 '_custom -> true
               )
 
-              @b4.submit('class -> "btn btn-sm btn-warning-outline pull-xs-left"){ UPDATE USER }
+              @b4.submit('class -> "btn btn-sm btn-warning-outline pull-xs-left"){ @Messages("user.update.submit") }
             </fieldset>
           }
         }
@@ -60,15 +60,15 @@
 
     <div class="card">
       <div class="card-header bg-danger">
-        <b>Remove User</b>
+        <b>@Messages("user.remove.header")</b>
       </div>
       <div class="card-block">
-        <p>Deleting a user has the following effects:</p>
+        <p>@Messages("user.remove.description")</p>
         <ul>
-          <li>All user content will be deleted.</li>
+          <li>@Messages("user.remove.description.list.1")</li>
         </ul>
 
-        <button class="btn btn-sm btn-danger-outline">REMOVE USER</button>
+        <button class="btn btn-sm btn-danger-outline">@Messages("user.remove.submit")</button>
       </div>
     </div>
   </div>
