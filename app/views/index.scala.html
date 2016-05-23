@@ -7,60 +7,13 @@
   <p class="lead">
   @loggedUser.map { user =>
     @Html(Messages("index.logged", user.fullName(loginInfo.get).getOrElse(Messages("index.none")), routes.Application.profile)) <br/>
-    @Html(Messages("index.signOut", routes.Auth.signOut))
+    @Html(Messages("index.signOut", routes.Auth.signOut)) <br/>
+    @if(user.role == Role.SIMPLE_USER) {
+      <b>@Messages("index.simpleUser.help")</b>
+    }
   }.getOrElse {
     @Html(Messages("index.notLogged", routes.Auth.signIn, routes.Auth.startSignUp)) <br/>
     @Html(Messages("index.resetPassword", routes.Auth.startResetPassword))
   }
   </p>
-  @*<hr/>
-  <p class="lead">@Messages("index.restProfile")</p>
-  <button class="btn btn-default" onclick="fetchProfile()">@Messages("index.fetchProfile")</button>*@
 }
-
-@views.html.dialog()
-
-@*<script type="text/javascript">
-  function fetchProfile() {
-    $.ajax("@routes.RestApi.profile", {
-      accept: {json:"application/json"},
-      success: function(data) {
-        showProfile(data)
-      },
-      statusCode: {
-        401: function(error) {
-          showError(error.responseJSON.error)
-        }
-      }
-    }).fail(function(error) {
-      if (error.status != 401) showError('@Messages("error.profileError")')
-    })
-  }
-
-  function showError(msg) {
-    var profileError = $('#profileError');
-    profileError.find(':first-child').text(msg);
-    $("#profileData").hide();
-    profileError.show();
-    $('#profileModal').modal()
-  }
-
-  function showProfile(data) {
-    var content = $('<ul></ul>');
-    content.append(
-      $('<li>@Messages("dialog.firstName"): ' + (data.firstName || '@Messages("dialog.none")') + '</li>'),
-      $('<li>@Messages("dialog.lastName"): ' + (data.lastName || '@Messages("dialog.none")') + '</li>'),
-      $('<li>@Messages("dialog.fullName"): ' + (data.fullName || '@Messages("dialog.none")') + '</li>'),
-      $('<li>@Messages("dialog.email"): ' + (data.email || '@Messages("dialog.none")') + '</li>')
-    );
-    $('#profileData').empty().append(content);
-
-    $('#profilePhoto').empty();
-    if ('avatarUrl' in data) $('#profilePhoto').append($('<img>',{src:data.avatarUrl, class:'small-avatar', style:'margin-top:0px'}))
-
-    $("#profileError").hide();
-    $('#profileData').show();
-    $('#profileModal').modal()
-  }
-</script>*@
-

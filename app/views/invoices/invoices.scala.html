@@ -29,15 +29,15 @@
       <h3 class="card-title text-success">
         @Messages("invoices.index.header")
         <a type="button" class="btn btn-primary btn-primary-outline pull-xs-right" href="@routes.InvoiceController.createInvoiceForm">
-          Create Invoice
+          @Messages("invoices.index.create")
         </a>
       </h3>
-      <h6 class="card-subtitle text-muted">Generate/track invoices.</h6>
+      <h6 class="card-subtitle text-muted">@Messages("invoices.index.subHeader")</h6>
     </div>
     @invoices match {
       case Nil => {
         <div class="card-block">
-          <p class="lead">No invoices have been generated yet!</p>
+          <p class="lead">@Messages("invoices.index.none")</p>
         </div>
       }
       case _ => {
@@ -52,7 +52,7 @@
                 <a href="#" id="hideInvoice-@invoice._id.get.stringify"><span class="label label-warning">Hide</span></a>
               </span>
             </b>
-            <p class="list-group-item-text">Services provided by @consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName during @invoice.startDate.toString("MM/dd/yyyy")-@invoice.endDate.toString("MM/dd/yyyy")</p>
+            <p class="list-group-item-text">@Messages("invoices.index.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName, invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
           </li>
         }
         </ul>

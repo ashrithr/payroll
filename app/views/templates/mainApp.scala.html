@@ -5,18 +5,6 @@
 
 @navbarContent = {
   <ul class="nav navbar-nav">
-    <li class="nav-item @("active".when(tab == "index"))">
-      <a class="nav-link" href="@routes.Application.index">@Messages("navbar.index")</a>
-    </li>
-    @if(loggedUser.isDefined) {
-      <li class="nav-item @("active".when(tab == "profile"))">
-        <a class="nav-link" href="@routes.Application.profile">@Messages("navbar.profile")</a>
-      </li>
-    } else {
-      <li class="nav-item disabled">
-        <a class="nav-link">@Messages("navbar.profile")</a>
-      </li>
-    }
     @loggedUser.map { user =>
       @if(user.role == Role.OWNER || user.role == Role.ADMIN) {
         <li class="nav-item @("active".when(tab == "users"))">
@@ -54,7 +42,7 @@
         <img class="nav-link avatar" src="@user.profileFor(loginInfo).flatMap(_.avatarUrl).getOrElse(routes.Assets.versioned("images/default_profile.png"))"/>
       </li>
       <li class="nav-item">
-        <span class="nav-link">@Messages("navbar.username", user.fullName(loginInfo).getOrElse(Messages("navbar.none")))</span>
+        <a class="nav-link" href="@routes.Application.profile">@Messages("navbar.username", user.fullName(loginInfo).getOrElse(Messages("navbar.none")))</a>
       </li>
     }
     <li class="nav-item">

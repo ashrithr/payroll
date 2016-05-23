@@ -4,7 +4,7 @@ navbar.welcome=Time Tracking
 navbar.toggle.nav=Toggle navigation
 navbar.index=Index
 navbar.profile=My Profile
-navbar.username=Hello, {0}!
+navbar.username={0}
 navbar.signout=Sign Out
 navbar.signin=Sign In
 navbar.signup = Sign Up
@@ -15,26 +15,24 @@ index.logged=Welcome <span class="text-success">{0}</span>, you are logged in. G
 index.signOut=You can also <a href="{0}">sign out</a>.
 index.notLogged=You aren''t logged in, you can <a href="{0}">sign in</a> or <a href="{1}">sign up</a> to create your account.
 index.resetPassword=If you forgot your password, you can <a href="{0}">reset</a> it.
-index.restProfile=You can also try getting your profile via an Ajax call. This will only succeed if you are authenticated to the application.
-index.fetchProfile=Fetch profile via Ajax
 index.none=None
+index.simpleUser.help=You aren''t assigned to a role yet by the administrator, until then you cannot access other modules.
 
 dialog.title=Your profile data
 dialog.email=Email
 dialog.firstName=First name
 dialog.lastName=Last name
 dialog.fullName=Full name
-dialog.available=Available authentication providers
 dialog.none=None
 
 profile.title=My profile
+profile.subtitle=These are your profile details
 profile.firstName=First name
 profile.lastName=Last name
 profile.fullName=Full name
 profile.email=Email
-profile.linked=Linked authentication providers
-profile.available=Available authentication providers
 profile.none=None
+profile.update.image=To update the image, create a gravatar account with same email address that you used to signup
 
 signup.title=Sign up
 signup.legend=Sign up for a new account
@@ -73,7 +71,6 @@ reset.doneTitle=Password reset completed
 reset.done=Your password has been reset.
 reset.gotoIndex=Goto to the <a href={0}>main page</a>.
 
-error.accessDenied=You need to log in to access the requested page
 error.notFound=The requested page couldn''t be found:
 error.notFound.details=Requested: {0}
 error.userExists=User {0} is already registered
@@ -81,11 +78,7 @@ error.passwordsDontMatch=Passwords don''t match
 error.serverError=Server error:
 error.noUser=The requested user can''t be found
 error.unregistered=The user {0} hasn''t finished the sign up process
-error.noProvider=Authentication provider ''{0}'' isn''t registered
 error.invalidCredentials=The supplied credentials are invalid
-error.notAuthenticated=The selected provider couldn''t authenticate you
-error.onlyHttpsAllowed=Only https allowed!
-error.onlyHttpsAllowedMsg=Only https access is allowed. Try <a href={0}>{0}</a>.
 error.profileError=Error getting profile data
 error.profileUnauthenticated=Can't access profile information: must authenticate first.
 error.profileUnauthorized=Can't access profile information: you don't have authorization to view.
@@ -98,10 +91,150 @@ mail.reset.subject=Reset password
 mail.reset.hi=Hello, {0}!
 mail.reset.instructions=We have received a request to reset your password. Just go to the following url to proceed.
 
-users.header=Users
-
+users.card.title=Users
+users.card.subTitle=Manage users and roles
 users.roleEdit.model.title=Update User Role
+
+#
+# Timesheets
+#
+
+app.timesheets.title=Timesheets
+
+# Timesheets - Admin Manage
 
 timesheets.admin.header=Timesheets Admin Portal
 
-modal.createClient.title=Create Client
+timesheets.admin.tab.contact.header=Contacts
+timesheets.admin.tab.contact.create=Create Contact
+timesheets.admin.tab.contact.description=Contacts are point of contacts for a particular vendor or client. You have to create contact's before creating Client or Vendor's.
+timesheets.admin.tab.contact.none=No contacts have been added yet!
+
+timesheets.admin.tab.client.header=Clients
+timesheets.admin.tab.client.create=Create Client
+timesheets.admin.tab.client.none=No Clients have been added yet!
+
+timesheets.admin.tab.vendor.header=Vendors
+timesheets.admin.tab.vendor.create=Create Vendor
+timesheets.admin.tab.vendor.none=No Vendors have been added yet!
+
+modal.contact.form.title=Create Contact
+modal.contact.form.firstName=First Name
+modal.contact.form.placeholder.firstName=First name of the contact
+modal.contact.form.lastName=Last Name
+modal.contact.form.placeholder.lastName=Last name of the contact
+modal.contact.form.email=Email
+modal.contact.form.placeholder.email=Email address of the contact
+modal.contact.form.contactTitle=Title
+modal.contact.form.placeholder.contactTitle=Title of the contact
+modal.contact.form.officeNum=Office Number
+modal.contact.form.placeholder.officeNum=Office Number of the contact
+modal.contact.form.mobileNum=Mobile Number
+modal.contact.form.placeholder.mobileNum=Mobile Number of the contact
+modal.contact.form.faxNum=Fax Number
+modal.contact.form.placeholder.faxNum=Fax Number of the contact
+modal.contact.form.submit=Create Contact
+
+modal.client.form.title=Create Client
+modal.client.form.companyName=Company Name
+modal.client.form.placeholder.companyName=Name of the client company
+modal.client.form.companyAddress=Company Address
+modal.client.form.placeholder.companyAddress=Address of the client company
+modal.client.form.primaryContacts=Primary Contacts
+modal.client.form.help.primaryContacts=Select at-least one contact. This contact will be used for email communication.
+modal.client.form.secondaryContacts=Secondary Contacts
+modal.client.form.submit=Create Client
+
+modal.vendor.form.title=Create Vendor
+modal.vendor.form.companyName=Company Name
+modal.vendor.form.placeholder.companyName=Name of the vendor company
+modal.vendor.form.companyAddress=Company Address
+modal.vendor.form.placeholder.companyAddress=Address of the vendor company
+modal.vendor.form.primaryContacts=Primary Contacts
+modal.vendor.form.help.primaryContacts=Select at-least one contact. This contact will be used for email communication.
+modal.vendor.form.secondaryContacts=Secondary Contacts
+modal.vendor.form.submit=Create Vendor
+
+# Timesheets - Admin Projects
+app.timesheets.projects.title=Timesheets - Projects
+
+timesheets.admin.projects.header=Projects
+timesheets.admin.projects.subHeader=Projects are the entities that will bind consultants to vendors and clients.
+timesheets.admin.projects.create=Create Project
+timesheets.admin.projects.none=No projects have yet been added!
+timesheets.admin.projects.project.size={0} members in this project.
+
+# Timesheets - Admin Project
+app.timesheets.project.title=Timesheets - Project
+
+modal.project.add.users.title=Associate User to Project
+modal.project.add.user.form.userSelect=Select a consultant
+modal.project.add.user.form.useCost=Cost per hour
+modal.project.add.user.form.submit=Submit
+
+timesheets.projects.project.name=Name
+timesheets.projects.project.startDate=Start Date
+timesheets.projects.project.endDate=End Date
+timesheets.projects.project.preferredCurrency=Preferred Currency
+timesheets.projects.project.biWeekly=Bi Weekly
+timesheets.projects.project.monthly=Monthly
+timesheets.projects.project.notes=Notes
+timesheets.projects.project.client=Client
+timesheets.projects.project.vendor=Vendor
+
+timesheets.projects.project.consultants.header=Consultants
+timesheets.projects.project.consultants.description=Add or delete users to this project
+
+timesheets.projects.project.remove.header=Remove Project
+timesheets.projects.project.remove.description=Deleting a project has the following effects
+timesheets.projects.project.remove.description.list.1=All the projects related information will be lost.
+
+timesheets.projects.project.remove.submit=REMOVE PROJECT
+
+# Timesheets - Admin Pending Timesheets
+app.timesheets.pending.title=Timesheets - Pending
+
+timesheets.pending.header=Pending Timesheets
+timesheets.pending.subHeader=These are the pending timesheets that are submitted by consultants.
+timesheets.pending.none=No pending timesheets needs approval.
+timesheets.pending.description={0} has logged {1} hours for the week of {2} - {3}.
+
+# Timesheets - weekView
+app.timesheets.weekView.title=Timesheets - Week View
+
+timesheets.weekView.header=Timesheets Week View
+timesheets.weekView.subHeader=This timesheet is for week of {0} - {1}
+timesheets.weekView.none=No projects have been assigned to you yet. Contact admin, if this is a mistake.
+timesheets.weekView.noAssignments.header=You have no project's assigned for this week. Contact admin, if this is a mistake.
+timesheets.weekView.noAssignments.description=Your project's and their respective start and end dates are as follows
+timesheets.weekView.noAssignments.details=<b>{0}</b><br\\>Start Date: {1}, End date: {2}.
+timesheets.weekView.status.saved=Saved <span class="timeago" date-value="{0}"></span>
+timesheets.weekView.status.submitted=Submitted <span class="timeago" date-value="{0}"></span>. Awaiting approval.
+timesheets.weekView.status.notSubmitted=Not submitted.
+timesheets.weekView.status.approved=Approved <span class="timeago" date-value="{0}"></span>, by {1}.
+timesheets.weekView.status.denied=Denied <span class="timeago" date-value="{0}"></span>, by {1}.
+
+#
+# Invoices
+#
+
+# Invoices
+app.invoices.title=Invoices
+
+invoices.index.header=Invoices
+invoices.index.create=Create Invoice
+invoices.index.subHeader=Generate/track invoices.
+invoices.index.none=No invoices have been generated yet!
+
+invoices.index.invoice.description=Services provided by {0} during {1}-{2}.
+
+# Invoices - Due
+app.invoices.due.title=Invoices - Due
+
+invoices.due.header=Invoices Due
+invoices.due.subHeader=These are the invoices that are due for payment.
+invoices.due.none=No invoices are due for payment!
+invoices.due.invoice.dueToday.heading=Invoice #{0} is due today ({1})
+invoices.due.invoice.pastDue.heading=Invoice #{0} is past due by <span class="timeago" date-value="{1}"></span> ({2})
+invoices.due.invoice.dueIn.heading=Invoice #{0} is due in <span class="duein" date-value="{1}"></span> ({2})
+invoices.due.invoice.description=Services provided by {0} during {1}-{2}

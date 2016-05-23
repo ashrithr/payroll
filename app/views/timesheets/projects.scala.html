@@ -11,17 +11,17 @@
   <div class="card">
     <div class="card-block">
       <h3 class="card-title text-success">
-        @Messages("timesheets.projects.admin.header")
+        @Messages("timesheets.admin.projects.header")
         <a type="button" class="btn btn-primary btn-primary-outline pull-xs-right" href="@routes.TimesheetAdmin.createProjectForm">
-          Create Project
+          @Messages("timesheets.admin.projects.create")
         </a>
       </h3>
-      <h6 class="card-subtitle text-muted">Projects are the entities that will bind consultants to vendors and clients.</h6>
+      <h6 class="card-subtitle text-muted">@Messages("timesheets.admin.projects.subHeader")</h6>
     </div>
     @projects match {
       case Nil => {
         <div class="card-block">
-          <p class="lead">No projects have yet been added!</p>
+          <p class="lead">@Messages("timesheets.admin.project.none")</p>
         </div>
       }
       case _ => {
@@ -33,10 +33,9 @@
               <span class="pull-xs-right">
                 <span class="label label-default timeago" date-value="@project.created"></span>
                 <span class="label label-info">@project.preferredCurrency</span>
-                <a href="@routes.TimesheetAdmin.editProject(project._id.get.stringify)"><span class="label label-primary">Edit</span></a>
               </span>
             </b>
-            <p class="list-group-item-text">@project.team.size members in this project.</p>
+            <p class="list-group-item-text">@Messages("timesheets.admin.projects.project.size", project.team.size)</p>
           </li>
         }
         </ul>

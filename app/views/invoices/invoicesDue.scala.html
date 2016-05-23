@@ -36,7 +36,7 @@
     @invoices match {
       case Nil => {
         <div class="card-block">
-          <p class="lead">No invoices are due for payment!</p>
+          <p class="lead">@Messages("invoices.due.none")</p>
         </div>
       }
       case _ => {
@@ -45,37 +45,37 @@
           @if(invoice.dueDate.withTimeAtStartOfDay().isEqual(DateTime.now.withTimeAtStartOfDay())) { @*due today*@
             <li class="list-group-item">
               <b class="list-group-item-heading">
-                Invoice #@invoice._id.get.stringify.takeRight(5) is due today (@invoice.dueDate.toString("MM/dd/yyyy"))
+                @Messages("invoices.due.invoice.dueToday.heading", invoice._id.get.stringify.takeRight(5), invoice.dueDate.toString("MM/dd/yyyy"))
                 <span class="pull-xs-right">
                   <span class="label label-warning">Due Today</span>
                   <span class="label label-default timeago" date-value="@invoice.created"></span>
                   <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
                 </span>
               </b>
-              <p class="list-group-item-text">Services provided by @consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName during @invoice.startDate.toString("MM/dd/yyyy")-@invoice.endDate.toString("MM/dd/yyyy")</p>
+              <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName, invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
             </li>
           } else { @if(invoice.dueDate.isBefore(DateTime.now)) { @*past due*@
             <li class="list-group-item">
               <b class="list-group-item-heading">
-                Invoice #@invoice._id.get.stringify.takeRight(5) is past due by <span class="timeago" date-value="@invoice.dueDate"></span> (@invoice.dueDate.toString("MM/dd/yyyy"))
+                @Html(Messages("invoices.due.invoice.pastDue.heading", invoice._id.get.stringify.takeRight(5), invoice.dueDate, invoice.dueDate.toString("MM/dd/yyyy")))
                 <span class="pull-xs-right">
                   <span class="label label-danger">Past Due</span>
                   <span class="label label-default timeago" date-value="@invoice.created"></span>
                   <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
                 </span>
               </b>
-              <p class="list-group-item-text">Services provided by @consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName during @invoice.startDate.toString("MM/dd/yyyy")-@invoice.endDate.toString("MM/dd/yyyy")</p>
+              <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName, invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
             </li>
           } else {
             <li class="list-group-item">
               <b class="list-group-item-heading">
-                Invoice #@invoice._id.get.stringify.takeRight(5) is due in <span class="duein" date-value="@invoice.dueDate"></span> (@invoice.dueDate.toString("MM/dd/yyyy"))
+                @Html(Messages("invoices.due.invoice.dueIn.heading", invoice._id.get.stringify.takeRight(5), invoice.dueDate, invoice.dueDate.toString("MM/dd/yyyy")))
                 <span class="pull-xs-right">
                   <span class="label label-default timeago" date-value="@invoice.created"></span>
                   <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
                 </span>
               </b>
-              <p class="list-group-item-text">Services provided by @consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName during @invoice.startDate.toString("MM/dd/yyyy")-@invoice.endDate.toString("MM/dd/yyyy")</p>
+              <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName, invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
             </li>
           }}
         }

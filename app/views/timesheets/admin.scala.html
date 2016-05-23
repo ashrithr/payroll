@@ -31,32 +31,32 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.contact.create.title")</h4>
+          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.contact.form.title")</h4>
         </div>
         <div class="modal-body">
           @b4.form(routes.TimesheetAdmin.createContact) {
             @b4.text(createContactForm("firstName"),
-              '_label -> "First Name",
-              '_placeholder -> "First name of the contact")
+              '_label -> Messages("modal.contact.form.firstName"),
+              '_placeholder -> Messages("modal.contact.form.placeholder.firstName"))
             @b4.text(createContactForm("lastName"),
-              '_label -> "Last Name",
-              '_placeholder -> "Last name of the contact")
+              '_label -> Messages("modal.contact.form.lastName"),
+              '_placeholder -> Messages("modal.contact.form.placeholder.lastName"))
             @b4.email(createContactForm("email"),
-              '_label -> "Email",
-              '_placeholder -> "Email of the contact")
+              '_label -> Messages("modal.contact.form.email"),
+              '_placeholder -> Messages("modal.contact.form.placeholder.email"))
             @b4.text(createContactForm("title"),
-              '_label -> "Title",
-              '_placeholder -> "Title of the contact")
+              '_label -> Messages("modal.contact.form.contactTitle"),
+              '_placeholder -> Messages("modal.contact.form.placeholder.contactTitle"))
             @b4.text(createContactForm("officeNum"),
-              '_label -> "Office Num",
-              '_placeholder -> "Office Num of the contact")
+              '_label -> Messages("modal.contact.form.officeNum"),
+              '_placeholder -> Messages("modal.contact.form.placeholder.officeNum"))
             @b4.text(createContactForm("mobileNum"),
-              '_label -> "Mobile Num",
-              '_placeholder -> "Mobile Num of the contact")
+              '_label -> Messages("modal.contact.form.mobileNum"),
+              '_placeholder -> Messages("modal.contact.form.placeholder.mobileNum"))
             @b4.text(createContactForm("faxNum"),
-              '_label -> "Fax Num",
-              '_placeholder -> "Fax Num of the contact")
-            @b4.submit('class -> "btn btn-primary-outline"){ Create Contact }
+              '_label -> Messages("modal.contact.form.faxNum"),
+              '_placeholder -> Messages("modal.contact.form.placeholder.faxNum"))
+            @b4.submit('class -> "btn btn-primary-outline"){ @Messages("modal.contact.form.submit") }
           }
         </div>
       </div>
@@ -68,28 +68,28 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.client.create.title")</h4>
+          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.client.form.title")</h4>
         </div>
         <div class="modal-body">
         @b4.form(routes.TimesheetAdmin.createClient, 'id -> "clientAddForm") {
           @b4.text(createClientForm("companyName"),
-            '_label -> "Company Name",
-            '_placeholder -> "Name of the Client Company")
+            '_label -> Messages("modal.client.form.companyName"),
+            '_placeholder -> Messages("modal.client.form.placeholder.companyName"))
           @b4.text(createClientForm("companyAddress"),
-            '_label -> "Company Address",
-            '_placeholder -> "Address of the Client Company")
+            '_label -> Messages("modal.client.form.companyAddress"),
+            '_placeholder -> Messages("modal.client.form.placeholder.companyAddress"))
           @b4.select(createClientForm("primaryContacts"),
             options = contacts.map(c => (c._id.get.stringify, s"${c.firstName} ${c.lastName}")),
             'class -> "select2",
-            '_label -> "Primary Contacts",
+            '_label -> Messages("modal.client.form.primaryContacts"),
             'multiple -> true,
-            '_help -> "Select at-least one contact. This contact will be used for email communication.")
+            '_help -> Messages("modal.client.form.help.primaryContacts"))
           @b4.select(createClientForm("secondaryContacts"),
             options = contacts.map(c => (c._id.get.stringify, s"${c.firstName} ${c.lastName}")),
             'class -> "select2",
-            '_label -> "Secondary Contacts",
+            '_label -> Messages("modal.client.form.secondaryContacts"),
             'multiple -> true)
-          @b4.submit('class -> "btn btn-primary-outline"){ Create Client }
+          @b4.submit('class -> "btn btn-primary-outline"){ @Messages("modal.client.form.submit") }
         }
         </div>
       </div>
@@ -101,31 +101,31 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.vendor.create.title")</h4>
+          <h4 class="modal-title" id="myModalLabel"> @Messages("modal.vendor.form.title")</h4>
         </div>
         <div class="modal-body">
         @b4.form(routes.TimesheetAdmin.createVendor, 'id -> "vendorAddForm") {
           @b4.text(createClientForm("companyName"),
             'id -> "vendorCompanyName",
-            '_label -> "Company Name",
-            '_placeholder -> "Name of the Client Company")
+            '_label -> Messages("modal.vendor.form.companyName"),
+            '_placeholder -> Messages("modal.vendor.form.placeholder.companyName"))
           @b4.text(createClientForm("companyAddress"),
             'id -> "vendorCompanyAddress",
-            '_label -> "Company Address",
-            '_placeholder -> "Address of the Client Company")
+            '_label -> Messages("modal.vendor.form.companyAddress"),
+            '_placeholder -> Messages("modal.vendor.form.placeholder.companyAddress"))
           @b4.select(createClientForm("primaryContacts"),
             options = contacts.map(c => (c._id.get.stringify, s"${c.firstName} ${c.lastName}")),
             'class -> "select2",
             'id -> "vendorPrimaryContacts",
-            '_label -> "Primary Contacts",
+            '_label -> Messages("modal.vendor.form.primaryContacts"),
             'multiple -> true,
-            '_help -> "Select at-least one contact. This contact will be used for email communication.")
+            '_help -> Messages("modal.vendor.form.help.primaryContacts"))
           @b4.select(createClientForm("secondaryContacts"),
             options = contacts.map(c => (c._id.get.stringify, s"${c.firstName} ${c.lastName}")),
             'id -> "vendorSecondaryContacts",
-            '_label -> "Secondary Contacts",
+            '_label -> Messages("modal.vendor.form.secondaryContacts"),
             'multiple -> true)
-          @b4.submit('class -> "btn btn-primary-outline"){ Create Vendor }
+          @b4.submit('class -> "btn btn-primary-outline"){ @Messages("modal.vendor.form.submit") }
         }
         </div>
       </div>
@@ -153,16 +153,16 @@
       <div class="container">
         <div class="spacer"></div>
         <h4>
-          Contacts
+          @Messages("timesheets.admin.tab.contact.header")
             <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createContactModal">
-              Create Contact
+              @Messages("timesheets.admin.tab.contact.create")
             </button>
         </h4>
         <div class="spacer"></div>
-        <p class="text-muted">Contacts are point of contacts for a particular vendor or client. You have to create contact's before creating Client or Vendor's.</p>
+        <p class="text-muted">@Messages("timesheets.admin.tab.contact.description")</p>
 
         @contacts match {
-          case Nil => { <p class="lead">No contacts have been added yet!</p> }
+          case Nil => { <p class="lead">@Messages("timesheets.admin.tab.contact.none")</p> }
           case _ => {
             @contacts.map { contact =>
               <ul class="list-group">
@@ -186,15 +186,15 @@
       <div class="container">
         <div class="spacer"></div>
         <h4>
-          Clients
+          @Messages("timesheets.admin.tab.client.header")
             <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createClientModal">
-              Create Client
+              @Messages("timesheets.admin.tab.client.create")
             </button>
         </h4>
         <div class="spacer"></div>
 
         @clients match {
-          case Nil => { <p class="lead">No Clients have been added yet!</p> }
+          case Nil => { <p class="lead">@Messages("timesheets.admin.tab.client.none")</p> }
           case _ => {
             @clients.map { client =>
               <ul class="list-group">
@@ -218,16 +218,16 @@
       <div class="container">
         <div class="spacer"></div>
         <h4>
-          Vendors
+          @Messages("timesheets.admin.tab.vendor.header")
             <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createVendorModal">
-              Create Vendor
+              @Messages("timesheets.admin.tab.vendor.create")
             </button>
         </h4>
         <div class="spacer"></div>
 
         @vendors match {
           case Nil => {
-            <p class="lead">No Vendors have been added yet!</p>
+            <p class="lead">@Messages("timesheets.admin.tab.vendor.none")</p>
           }
           case _ => {
             @vendors.map { vendor =>

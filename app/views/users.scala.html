@@ -4,23 +4,31 @@
 @(loggedUser: User, loginInfo: LoginInfo, users: List[User])(implicit request: RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 @views.html.templates.mainApp(Messages("app.title"), tab = "users", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
-  @*Core*@
-  <h2 class="text-success">@Messages("users.header")</h2>
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("users.card.title")
+      </h3>
+      <h6 class="card-subtitle text-muted">@Messages("users.card.subTitle")</h6>
+    </div>
 
-  <table class="table">
-    <thead>
-      <th>Email</th>
-      <th>Name</th>
-      <th>Role</th>
-    </thead>
-    <tbody>
-    @users.map { user =>
-      <tr id="@user.id">
-        <td><a href="@routes.UserController.getUser(user.id.toString)">@user.profiles.map(_.email)</a></td>
-        <td>@user.profiles.map(_.fullName)</td>
-        <td>@user.role</td>
-      </tr>
-    }
-    </tbody>
-  </table>
+    <table class="table">
+      <thead>
+        <th></th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Role</th>
+      </thead>
+      <tbody>
+      @users.map { user =>
+        <tr id="@user.id">
+          <td><img src="@user.profiles.map(_.avatarUrl.getOrElse(routes.Assets.versioned("images/default_profile.png")))" height="30px" /></td>
+          <td><a href="@routes.UserController.getUser(user.id.toString)">@user.profiles.map(_.email)</a></td>
+          <td>@user.profiles.map(_.fullName)</td>
+          <td>@user.role</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
 }

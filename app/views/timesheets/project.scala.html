@@ -74,7 +74,7 @@
         <div class="modal-body">
           <form>
             <fieldset class="form-group">
-              <label for="addUserSelect">Select a consultant:</label>
+              <label for="addUserSelect">@Messages("modal.project.add.user.form.userSelect")</label>
               <select class="form-control select2" id="addUserSelect">
                 @users.filter(_.role == Role.CONSULTANT).filterNot(c => project.get.team.getOrElse(List()).map(_.userId).contains(c.id.toString)).map { consultant =>
                   <option value="@consultant.id">@consultant.profiles.map(_.fullName)</option>
@@ -82,54 +82,57 @@
               </select>
             </fieldset>
             <fieldset class="form-group">
-              <label for="userCost">Cost per hour:</label>
+              <label for="userCost">@Messages("modal.project.add.user.form.useCost")</label>
               <input class="form-control" type="text" name="userCost" id="userCost" placeholder="0.00">
             </fieldset>
           </form>
 
           <p id="addUserModalLabel" class="text-center"></p>
           <hr />
-          <button id="addUserModalBtn" name="SubmitBtn" class="btn btn-large btn-primary">Submit</button>
+          <button id="addUserModalBtn" name="SubmitBtn" class="btn btn-large btn-primary">@Messages("modal.project.add.user.form.submit")</button>
         </div>
       </div>
     </div>
   </div>
 
   @*Project information*@
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-header bg-success">
-        <b>Project Information</b>
-      </div>
-      @project.map { p =>
+  @project.map { p =>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header bg-success">
+          <b>
+            Project Information
+            <a class="pull-xs-right" data-toggle="tooltip" data-placement="bottom" title="Edit Project" href="@routes.TimesheetAdmin.editProject(p._id.get.stringify)"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a>
+          </b>
+        </div>
         <table class="table">
-          <tr><td>Name</td> <td>@p.projectName</td></tr>
-          <tr><td>Start Date</td> <td>@p.startDate.map(_.toString("MM-dd-YYYY"))</td></tr>
-          <tr><td>End Date</td> <td>@p.endDate.map(_.toString("MM-dd-YYYY"))</td></tr>
-          <tr><td>Preferred Currency</td> <td>@p.preferredCurrency</td></tr>
-          <tr><td>Bi Weekly</td> <td>@p.biWeekly</td></tr>
-          <tr><td>Monthly</td> <td>@p.monthly</td></tr>
-          <tr><td>Notes</td> <td>@p.notes</td></tr>
+          <tr><td>@Messages("timesheets.projects.project.name")</td> <td>@p.projectName</td></tr>
+          <tr><td>@Messages("timesheets.projects.project.startDate")</td> <td>@p.startDate.map(_.toString("MM-dd-YYYY"))</td></tr>
+          <tr><td>@Messages("timesheets.projects.project.endDate")</td> <td>@p.endDate.map(_.toString("MM-dd-YYYY"))</td></tr>
+          <tr><td>@Messages("timesheets.projects.project.preferredCurrency")</td> <td>@p.preferredCurrency</td></tr>
+          <tr><td>@Messages("timesheets.projects.project.biWeekly")</td> <td>@p.biWeekly</td></tr>
+          <tr><td>@Messages("timesheets.projects.project.monthly")</td> <td>@p.monthly</td></tr>
+          <tr><td>@Messages("timesheets.projects.project.notes")</td> <td>@p.notes</td></tr>
           @client.map { c =>
-            <tr><td>Client</td> <td>@c.companyName</td></tr>
+            <tr><td>@Messages("timesheets.projects.project.client")</td> <td>@c.companyName</td></tr>
           }
           @vendor.map { v =>
-            <tr><td>Vendor</td> <td>@v.companyName</td></tr>
+            <tr><td>@Messages("timesheets.projects.project.vendor")</td> <td>@v.companyName</td></tr>
           }
         </table>
-      }
+      </div>
     </div>
-  </div>
+  }
 
   @*Project add/remove users*@
   <div class="col-sm-6">
     <div class="card">
       <div class="card-header bg-primary">
-        <b>Consultants</b>
+        <b>@Messages("timesheets.projects.project.consultants.header")</b>
       </div>
       <div class="card-block">
         <p>
-          Add or delete users to this project
+          @Messages("timesheets.projects.project.consultants.description")
           <span class="pull-xs-right">
             <a class="btn btn-success-outline" data-toggle="modal" href="#addUserModal" id="addUser">
               <i class="fa fa-plus" aria-hidden="true"></i> Add
@@ -144,7 +147,7 @@
             <tr>
               <td align="left">@users.find(_.id.toString == consultant.userId).get.profiles.map(_.fullName)</td>
               <td align="center">@consultant.rate</td>
-              <td align="right"><button type="button" id="removeUser-@consultant.userId" class="btn btn-danger-outline btn-sm" data-toggle="tooltip" data-placement="bottom" title="Remove this user"><i class="fa fa-times fa-lg" aria-hidden="true"></i></button></td>
+              <td align="right"><button type="button" id="removeUser-@consultant.userId" class="btn btn-danger-outline btn-sm" data-toggle="tooltip" data-placement="bottom" title="Remove this user"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button></td>
             </tr>
           }
         }
@@ -154,15 +157,15 @@
 
     <div class="card">
       <div class="card-header bg-danger">
-        <b>Remove Project</b>
+        <b>@Messages("timesheets.projects.project.remove.header")</b>
       </div>
       <div class="card-block">
-        <p>Deleting a project has the following effects:</p>
+        <p>@Messages("timesheets.projects.project.remove.description")</p>
         <ul>
-          <li>All the projects related information will be lost.</li>
+          <li>@Messages("timesheets.projects.project.remove.description.list.1")</li>
         </ul>
 
-        <button class="btn btn-sm btn-danger-outline">REMOVE PROJECT</button>
+        <button class="btn btn-sm btn-danger-outline">@Messages("timesheets.projects.project.remove.submit")</button>
       </div>
     </div>
   </div>
