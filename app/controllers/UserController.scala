@@ -23,19 +23,27 @@ class UserController @Inject() (val messagesApi: MessagesApi,
 
   private val logger = Logger(this.getClass)
 
-  def users = silhouette.SecuredAction(WithRole(Role.OWNER)).async { implicit request =>
+  def users = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
     userService.findAll.map { users =>
       Ok(views.html.users(request.identity, request.authenticator.loginInfo, users))
     }
   }
 
-  def getUser(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER)).async { implicit request =>
+  def getUser(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
     userService.find(UUID.fromString(id)).map { user =>
-      Ok(views.html.user(request.identity, request.authenticator.loginInfo, user, UserRoleUpdate.form, Role.values.toSeq))
+      if(request.identity.role == Role.OWNER) {
+        Ok(views.html.user(request.identity, request.authenticator.loginInfo, user, UserRoleUpdate.form, Role.values.toSeq))
+      } else {
+        if(user.get.role == Role.OWNER) { // admin cannot edit owner account
+          Forbidden("Not authorized to view owner account")
+        } else {
+          Ok(views.html.user(request.identity, request.authenticator.loginInfo, user, UserRoleUpdate.form, Role.values.toSeq diff Seq(Role.withName("owner"), Role.withName("admin"))))
+        }
+      }
     }
   }
 
-  def updateUserRole(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER)) { implicit request =>
+  def updateUserRole(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)) { implicit request =>
     UserRoleUpdate.form.bindFromRequest.fold(
       formWithErrors => {
         BadRequest
