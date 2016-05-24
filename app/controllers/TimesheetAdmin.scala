@@ -139,7 +139,7 @@ class TimesheetAdmin @Inject() (val messagesApi: MessagesApi,
           case Left(ex) => BadRequest(Json.obj("success" -> false, "message" -> s"Failed to update : ${ex.message}"))
           case Right(c) => Ok(Json.obj("success" -> true, "message" -> s"Added consultant."))
         }
-      case None => Future.successful(BadRequest(Json.obj("success" -> false, "message" -> "Consultant not selected")))
+      case _ => Future.successful(BadRequest(Json.obj("success" -> false, "message" -> "Consultant not selected")))
     }
   }
 

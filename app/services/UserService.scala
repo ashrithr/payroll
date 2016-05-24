@@ -26,7 +26,7 @@ class UserService @Inject() (userDao: UserDao) extends IdentityService[User] {
   def findAll = userDao.findAll()
 
   def updateRole(id: UUID, role: Role) = {
-    find(id) flatMap {
+    userDao.find(id) flatMap {
       case Some(user) =>
         userDao.update(user, role)
         Future.successful(user)

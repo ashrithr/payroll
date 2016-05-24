@@ -10,15 +10,20 @@ object SignUpForm {
 
   case class SignUpData(email:String, password:String, firstName:String, lastName:String)
 
-  val allNumbers = """\d*""".r
-  val allLetters = """[A-Za-z]*""".r
+  /*
+   * (?=.*[A-Z])      string should have at-least one uppercase letter.
+   * (?=.*[!@#$&*])   string should have at-least one special case letter.
+   * (?=.*[0-9])      string should have at-least one digit.
+   * (?=.*[a-z])      string should have at-least one lowercase letter.
+   * .{12,}           string is of min length 12.
+   */
+  val passwordRegex = """^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{12,}$""".r
 
   val passwordCheckConstraint: Constraint[String] = Constraint("constraints.passwordcheck")({
     plainText =>
       val errors = plainText match {
-        case allNumbers() => Seq(ValidationError("Password is all numbers, use a mix of numbers and letters."))
-        case allLetters() => Seq(ValidationError("Password is all letters, use a mix of numbers and letters."))
-        case _ => Nil
+        case passwordRegex() => Nil
+        case _ => Seq(ValidationError("Password does not meet standard. Should contain at-least one uppercase, one lowercase, one digit and one special character(!@#$&*)"))
       }
       if (errors.isEmpty) {
         Valid
