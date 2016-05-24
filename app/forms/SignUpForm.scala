@@ -17,13 +17,13 @@ object SignUpForm {
    * (?=.*[a-z])      string should have at-least one lowercase letter.
    * .{12,}           string is of min length 12.
    */
-  val passwordRegex = """^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{12,}$""".r
+  val passwordRegex = """^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{10,}$""".r
 
   val passwordCheckConstraint: Constraint[String] = Constraint("constraints.passwordcheck")({
     plainText =>
       val errors = plainText match {
         case passwordRegex() => Nil
-        case _ => Seq(ValidationError("Password does not meet standard. Should contain at-least one uppercase, one lowercase, one digit and one special character(!@#$&*)"))
+        case _ => Seq(ValidationError("Password should contain at-least one uppercase, one lowercase, one digit and one special character(!@#$&*)"))
       }
       if (errors.isEmpty) {
         Valid
@@ -37,7 +37,7 @@ object SignUpForm {
     mapping(
       "email" -> email,
       "password" -> tuple(
-        "password1" -> nonEmptyText.verifying(minLength(12)).verifying(passwordCheckConstraint),
+        "password1" -> nonEmptyText.verifying(minLength(10)).verifying(passwordCheckConstraint),
         "password2" -> nonEmptyText
       ).verifying(Messages("error.passwordsDontMatch"), password => password._1 == password._2),
       "firstName" -> nonEmptyText,

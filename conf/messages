@@ -40,6 +40,7 @@ signup.email=Email
 signup.firstName=First name
 signup.lastName=Last name
 signup.password=Password
+signup.password.help=Password should contain at-least one uppercase, one lowercase, one digit and one special character(!@#$&*)
 signup.verify=Verify password
 signup.submit=Sign up
 signup.postForm=Already a member? <a href="{0}">Sign in</a> now
@@ -65,6 +66,7 @@ reset.submit=Submit
 reset.instructions=We''ve sent you an email to {0} with instructions to reset your password.
 reset.legend=Reset your password
 reset.password=Password
+reset.password.help=Password should contain at-least one uppercase, one lowercase, one digit and one special character(!@#$&*)
 reset.verifyPassword=Verify password
 reset.reset=Reset
 reset.doneTitle=Password reset completed
