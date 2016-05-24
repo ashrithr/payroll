@@ -12,6 +12,10 @@ class Scheduler @Inject() (
   @Named("invoice-due-notifier") val invoiceDueNotifierActor: ActorRef
   )(implicit ec: ExecutionContext) {
 
-  //system.scheduler.schedule(0.microseconds, 10.seconds, invoiceDueNotifierActor, InvoiceDueNotifier.DueToday)
+  /**
+    * Invoice notifications for today and past due
+    */
+  system.scheduler.schedule(0.seconds, 1.day, invoiceDueNotifierActor, InvoiceDueNotifier.DueToday)
+  system.scheduler.schedule(0.seconds, 7.days, invoiceDueNotifierActor, InvoiceDueNotifier.PastDue)
 
 }

@@ -1,4 +1,4 @@
-name := """time-tracking"""
+name := """time-tracker"""
 
 version := "1.0-SNAPSHOT"
 
