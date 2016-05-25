@@ -30,6 +30,7 @@ class UserService @Inject() (userDao: UserDao) extends IdentityService[User] {
       case Some(user) =>
         userDao.update(user, role)
         Future.successful(user)
+      case None => Future.successful(User)
     }
   }
 

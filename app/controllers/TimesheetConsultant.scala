@@ -52,7 +52,7 @@ class TimesheetConsultant @Inject() (val messagesApi: MessagesApi,
   def save(projectCode: String, userId: String, date: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN) || WithRole(Role.CONSULTANT)).async { implicit request =>
     request.body.asJson.map {
       case JsObject(fields) =>
-        /** TODO abstract following logic to separate method findOrCreateBy in DocumentDao */
+        // TODO abstract following logic to separate method findOrCreateBy in DocumentDao
         val query = Json.obj("projectCode" -> projectCode, "consultantId" -> userId, "weekStart" -> DateTime.parse(date).dayOfWeek().withMinimumValue(), "weekEnd" -> DateTime.parse(date).dayOfWeek().withMaximumValue())
         Timesheet.findOne(query).map {
           case Some(timesheet) =>

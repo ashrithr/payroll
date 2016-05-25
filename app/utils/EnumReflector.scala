@@ -3,8 +3,8 @@ package utils
 import scala.reflect.runtime.universe._
 
 /**
-  * Scala [[Enumeration]] helpers implementing Scala versions of
-  * Java's [[java.lang.Enum.valueOf(Class[Enum], String)]].
+  * Scala Enumeration helpers implementing Scala versions of
+  * Java's java.lang.Enum.valueOf(Class[Enum], String).
   *
   * Usage: {{{val level = EnumReflector.withName[FunninessLevel.Value]("LOL")}}}
   */
@@ -16,7 +16,7 @@ object EnumReflector {
     * Returns a value of the specified enumeration with the given name.
     * @param name value name
     * @tparam T enumeration type
-    * @return enumeration value, see [[scala.Enumeration.withName(String)]]
+    * @return enumeration value, see scala.Enumeration.withName(String)
     */
   def withName[T <: Enumeration#Value: TypeTag](name: String): T = {
     typeOf[T] match {
@@ -31,7 +31,7 @@ object EnumReflector {
     * Returns a value of the specified enumeration with the given name.
     * @param clazz enumeration class
     * @param name value name
-    * @return enumeration value, see [[scala.Enumeration#withName(String)]]
+    * @return enumeration value, see scala.Enumeration#withName(String)
     */
   def withName(clazz: Class[_], name: String): Enumeration#Value = {
     val classSymbol = mirror.classSymbol(clazz)

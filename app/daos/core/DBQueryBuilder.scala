@@ -28,15 +28,15 @@ object DBQueryBuilder {
 
   def unset(field: String): JsObject = Json.obj("$unset" -> Json.obj(field -> 1))
 
-  def inc(field: String, amount: Int) = Json.obj("$inc" -> Json.obj(field -> amount))
+  def inc(field: String, amount: Int): JsObject = Json.obj("$inc" -> Json.obj(field -> amount))
 
   def or(criterias: JsObject*): JsObject = Json.obj("$or" -> criterias)
 
-  def gt[T](field: String, value: T)(implicit writer: Writes[T]) = Json.obj(field -> Json.obj("$gt" -> value))
+  def gt[T](field: String, value: T)(implicit writer: Writes[T]): JsObject = Json.obj(field -> Json.obj("$gt" -> value))
 
-  def lt[T](field: String, value: T)(implicit writer: Writes[T]) = Json.obj(field -> Json.obj("$lt" -> value))
+  def lt[T](field: String, value: T)(implicit writer: Writes[T]): JsObject = Json.obj(field -> Json.obj("$lt" -> value))
 
-  def in[T](field: String, value: T)(implicit writer: Writes[T]) = Json.obj(field -> Json.obj("$in" -> value))
+  def in[T](field: String, value: T)(implicit writer: Writes[T]): JsObject = Json.obj(field -> Json.obj("$in" -> value))
 
   def query[T](query: T)(implicit writer: Writes[T]): JsObject = Json.obj("$query" -> query)
 

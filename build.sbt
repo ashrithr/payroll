@@ -2,7 +2,11 @@ name := """time-tracker"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, DebianPlugin)
+
+maintainer in Linux := "Ashrith <ashrith@me.com>"
+
+packageSummary in Linux := "Time Tracker Application"
 
 scalaVersion := "2.11.7"
 
@@ -48,17 +52,19 @@ libraryDependencies ++= Seq(
   "com.mohiva" %% "play-silhouette-testkit" % "4.0.0-BETA2" % "test"
 )
 
-//scalacOptions ++= Seq(
-//  "-encoding", "UTF-8",
-//  "-deprecation",
-//  "-feature",
-//  "-unchecked",
-//  "-Xfatal-warnings",
-//  "-Xlint",
-//  "-Ywarn-adapted-args",
-//  "-Ywarn-dead-code",
-//  "-Ywarn-inaccessible",
-//  "-Ywarn-nullary-override",
-//  "-Ywarn-value-discard",
-//  "-language:reflectiveCalls"
-//)
+scalacOptions in (Compile, doc) ++= Seq(
+  "-encoding", "UTF-8",
+  "-deprecation:false",
+  "-feature",
+  "-unchecked",
+  "-Xfatal-warnings",
+  "-Xlint",
+  "-Xlint:-missing-interpolator",
+  "-Ywarn-adapted-args",
+  "-Ywarn-dead-code",
+  "-Ywarn-inaccessible",
+  "-Ywarn-nullary-override",
+  "-Ywarn-value-discard",
+  "-language:reflectiveCalls",
+  "-no-link-warnings"
+)

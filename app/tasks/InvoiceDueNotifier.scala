@@ -25,12 +25,12 @@ class InvoiceDueNotifier @Inject()(val messagesApi: MessagesApi, mailer: Mailer)
   import InvoiceDueNotifier._
 
   override def receive: Receive = {
-    case DueToday => dueToday
-    case PastDue => pastDue
+    case DueToday => dueToday()
+    case PastDue => pastDue()
   }
 
-  def dueToday = {
-    Invoice.find(Json.obj("hidden" -> false, "paymentReceived" -> false)).map { invoices =>
+  def dueToday() = {
+    Invoice.find(Json.obj("hidden" -> false, "paymentReceived" -> false)).foreach { invoices =>
       invoices.foreach { invoice =>
         if(invoice.dueDate.withTimeAtStartOfDay().isEqual(DateTime.now.withTimeAtStartOfDay())) {
           mailer.invoicesDueToday()
@@ -39,8 +39,8 @@ class InvoiceDueNotifier @Inject()(val messagesApi: MessagesApi, mailer: Mailer)
     }
   }
 
-  def pastDue = {
-    Invoice.find(Json.obj("hidden" -> false, "paymentReceived" -> false)).map { invoices =>
+  def pastDue() = {
+    Invoice.find(Json.obj("hidden" -> false, "paymentReceived" -> false)).foreach { invoices =>
       invoices.foreach { invoice =>
         if(invoice.dueDate.isBefore(DateTime.now)) {
           mailer.invoicesPastDue()

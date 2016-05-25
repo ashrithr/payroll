@@ -21,6 +21,7 @@ object PdfUtils {
         ct.addElement(e)
       }
       ct.go()
+      () // Explicitly return unit
     }
 
   }
@@ -34,6 +35,7 @@ object PdfUtils {
         ct.addElement(e)
       }
       ct.go()
+      () // Explicitly return unit
     }
 
   }
