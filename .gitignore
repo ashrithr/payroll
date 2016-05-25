@@ -10,3 +10,4 @@ target
 /.settings
 /RUNNING_PID
 /activator-launch-*.jar
+/activator
