@@ -9,7 +9,7 @@
       $("#paymentMadeInvoice-@invoice._id.get.stringify").click(function() {
         $.ajax({
           type: "PUT",
-          url: "/invoices/paymentMade/@invoice._id.get.stringify",
+          url: "@routes.InvoiceController.paymentReceived(invoice._id.get.stringify)",
           success: function(data){
             location.reload();
           },

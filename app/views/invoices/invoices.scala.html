@@ -7,7 +7,7 @@
       $("#hideInvoice-@invoice._id.get.stringify").click(function() {
         $.ajax({
           type: "PUT",
-          url: "/invoices/hide/@invoice._id.get.stringify",
+          url: "@routes.InvoiceController.hideInvoice(invoice._id.get.stringify)",
           success: function(data){
             location.reload();
           },

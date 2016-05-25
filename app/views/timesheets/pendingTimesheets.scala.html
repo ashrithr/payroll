@@ -13,7 +13,7 @@
 
         $.ajax({
           type: "POST",
-          url: "/timesheets/approve/@timesheet._id.get.stringify",
+          url: "@routes.TimesheetAdmin.approveTimesheet(timesheet._id.get.stringify)",
           success: function(data){
             location.reload();
           },
@@ -30,7 +30,7 @@
 
         $.ajax({
           type: "POST",
-          url: "/timesheets/deny/@timesheet._id.get.stringify",
+          url: "@routes.TimesheetAdmin.denyTimesheet(timesheet._id.get.stringify)",
           success: function(data){
             location.reload();
           },
