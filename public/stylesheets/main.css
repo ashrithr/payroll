@@ -18,6 +18,10 @@ body.modal-open {
     margin-right: -10px;
 }
 
+.dropdown-backdrop {
+    position: static;
+}
+
 .avatar {
     height: 40px;
     /*margin-top: 5px;*/
