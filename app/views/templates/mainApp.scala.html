@@ -11,7 +11,7 @@
           <a class="nav-link" href="@routes.UserController.users()">Users</a>
         </li>
         <li class="nav-item btn-group @("active".when(tab == "timesheets"))">
-          <a class="dropdown-toggle nav-link" type="button" id="dropdownMenuTimesheets" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Timesheets</a>
+          <a class="dropdown-toggle nav-link" role="button" id="dropdownMenuTimesheets" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Timesheets</a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuTimesheets">
             <li><a class="dropdown-item" href="@routes.TimesheetAdmin.index">Manage</a></li>
             <li><a class="dropdown-item" href="@routes.TimesheetAdmin.projects">Projects</a></li>
@@ -19,7 +19,7 @@
           </ul>
         </li>
         <li class="nav-item btn-group @("active".when(tab == "invoices"))">
-          <a class="dropdown-toggle nav-link" type="button" id="dropdownMenuInvoices" data-toggle="dropdown" aria-haspopup="true"  aria-expanded="false">Invoices</a>
+          <a class="dropdown-toggle nav-link" role="button" id="dropdownMenuInvoices" data-toggle="dropdown" aria-haspopup="true"  aria-expanded="false">Invoices</a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuInvoices">
             <li><a class="dropdown-item" href="@routes.InvoiceController.index">Invoices</a></li>
             <li><a class="dropdown-item" href="@routes.InvoiceController.invoicesDue">Invoices Due</a></li>
