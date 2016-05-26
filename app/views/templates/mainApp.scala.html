@@ -12,24 +12,25 @@
         </li>
         <li class="nav-item btn-group @("active".when(tab == "timesheets"))">
           <a class="dropdown-toggle nav-link" type="button" id="dropdownMenuTimesheets" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Timesheets</a>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuTimesheets">
-            <a class="dropdown-item" href="@routes.TimesheetAdmin.index">Manage</a>
-            <a class="dropdown-item" href="@routes.TimesheetAdmin.projects">Projects</a>
-            <a class="dropdown-item" href="@routes.TimesheetAdmin.pendingTimesheets">Pending Timesheets</a>
-          </div>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuTimesheets">
+            <li><a class="dropdown-item" href="@routes.TimesheetAdmin.index">Manage</a></li>
+            <li><a class="dropdown-item" href="@routes.TimesheetAdmin.projects">Projects</a></li>
+            <li><a class="dropdown-item" href="@routes.TimesheetAdmin.pendingTimesheets">Pending Timesheets</a></li>
+          </ul>
         </li>
         <li class="nav-item btn-group @("active".when(tab == "invoices"))">
           <a class="dropdown-toggle nav-link" type="button" id="dropdownMenuInvoices" data-toggle="dropdown" aria-haspopup="true"  aria-expanded="false">Invoices</a>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuInvoices">
-            <a class="dropdown-item" href="@routes.InvoiceController.index">Invoices</a>
-            <a class="dropdown-item" href="@routes.InvoiceController.invoicesDue">Invoices Due</a>
-          </div>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuInvoices">
+            <li><a class="dropdown-item" href="@routes.InvoiceController.index">Invoices</a></li>
+            <li><a class="dropdown-item" href="@routes.InvoiceController.invoicesDue">Invoices Due</a></li>
+          </ul>
         </li>
       } else {
         @if(user.role == Role.CONSULTANT) {
           <li class="nav-item @("active".when(tab == "timesheets"))">
             <a class="nav-link" href="@routes.TimesheetConsultant.view(user.profiles.flatMap(_.email).head, DateTime.now.toString("YYYY-MM-dd"))">
-              Timesheets</a>
+              Timesheets
+            </a>
           </li>
         }
       }

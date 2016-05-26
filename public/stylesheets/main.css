@@ -120,6 +120,13 @@ body.modal-open {
     .navbar .navbar-nav {
         float:none !important;
     }
+    .navbar-nav .nav-item {
+        display: block;
+    }
+    .dropdown-menu {
+        position: relative;
+        float: none;
+    }
 }
 
 .card {
