@@ -122,6 +122,7 @@
             '_help -> Messages("modal.vendor.form.help.primaryContacts"))
           @b4.select(createClientForm("secondaryContacts"),
             options = contacts.map(c => (c._id.get.stringify, s"${c.firstName} ${c.lastName}")),
+            'class -> "select2",
             'id -> "vendorSecondaryContacts",
             '_label -> Messages("modal.vendor.form.secondaryContacts"),
             'multiple -> true)
