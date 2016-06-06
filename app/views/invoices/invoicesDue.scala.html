@@ -52,7 +52,7 @@
                   <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
                 </span>
               </b>
-              <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName, invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
+              <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName.getOrElse("FNU LNU"), invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
             </li>
           } else { @if(invoice.dueDate.isBefore(DateTime.now)) { @*past due*@
             <li class="list-group-item">
@@ -64,7 +64,7 @@
                   <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
                 </span>
               </b>
-              <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName, invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
+              <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName.getOrElse("FNU LNU"), invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
             </li>
           } else {
             <li class="list-group-item">
@@ -75,7 +75,7 @@
                   <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
                 </span>
               </b>
-              <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName, invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
+              <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName.getOrElse("FNU LNU"), invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
             </li>
           }}
         }

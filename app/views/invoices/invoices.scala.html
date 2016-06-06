@@ -52,7 +52,7 @@
                 <a href="#" id="hideInvoice-@invoice._id.get.stringify"><span class="label label-warning">Hide</span></a>
               </span>
             </b>
-            <p class="list-group-item-text">@Messages("invoices.index.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName, invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
+            <p class="list-group-item-text">@Messages("invoices.index.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName.getOrElse("FNU LNU"), invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
           </li>
         }
         </ul>
