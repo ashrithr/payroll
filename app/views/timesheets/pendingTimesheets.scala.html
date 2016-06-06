@@ -65,7 +65,7 @@
           @timesheets.map { timesheet =>
             <li class="list-group-item">
               <b class="list-group-item-heading">
-                @Messages("timesheets.pending.description", consultants.find(_.id.toString == timesheet.consultantId).map(_.profiles.map(_.fullName)), timesheet.totalHours, timesheet.weekStart.toString("dd MMM YYYY"), timesheet.weekEnd.toString("dd MMM YYYY"))
+                @Messages("timesheets.pending.description", consultants.find(_.id.toString == timesheet.consultantId).map(_.profiles.head.fullName.getOrElse("FNU LNU")).getOrElse("FNU LNU"), timesheet.totalHours, timesheet.weekStart.toString("dd MMM YYYY"), timesheet.weekEnd.toString("dd MMM YYYY"))
                 <span class="pull-xs-right">
                   <span class="label label-default timeago" date-value="@timesheet.submittedAt"></span>
                   <button type="button" id="approveRequest-@timesheet._id.get.stringify" class="btn btn-success-outline btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approve this request"><i class="fa fa-check fa-lg" aria-hidden="true"></i></button>
