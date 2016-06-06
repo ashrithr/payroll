@@ -223,6 +223,23 @@ timesheets.admin.projects.create=Create Project
 timesheets.admin.projects.none=No projects have yet been added!
 timesheets.admin.projects.project.size={0} members in this project.
 
+# Timesheets - Create Project
+project.legend=Create Project
+project.name.label=Project Name
+project.name.placeholder=Name of the Project
+project.start.date.label=Start Date
+project.start.date.placeholder=Start Date of the Project (MM/DD/YYY)
+project.end.date.label=End Date
+project.end.date.placeholder=End Date of the Project (MM/DD/YYY)
+project.preferred.currency.label=Preferred Currency
+project.biWeekly=BiWeekly?
+project.notes.label=Notes
+project.notes.placeholder=Enter any notes
+project.vendor.label=Vendor
+project.client.label=Client
+project.payment.net.label=Payment Net
+project.submit=Submit Project
+
 # Timesheets - Admin Project
 app.timesheets.project.title=Timesheets - Project
 
@@ -286,6 +303,15 @@ invoices.index.subHeader=Generate/track invoices.
 invoices.index.none=No invoices have been generated yet!
 
 invoices.index.invoice.description=Services provided by {0} during {1}-{2}.
+
+# Invoices - Create
+invoice.legend=Create Invoice
+invoice.project.label=Project
+invoice.consultant.label=Consultant
+invoice.start.date.label=Start Date
+invoice.start.date.placeholder=Enter the Start Date (MM/DD/YYYY)
+invoice.end.date.label=End Date
+invoice.end.date.placeholder=Enter the End Date (MM/DD/YYYY)
 
 # Invoices - Due
 app.invoices.due.title=Invoices - Due
