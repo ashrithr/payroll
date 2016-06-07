@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "2.2.1",
   "org.webjars" % "font-awesome" % "4.6.1",
   "org.webjars" % "momentjs" % "2.12.0",
-  "org.webjars" % "bootstrap-datepicker" % "1.5.0-1" exclude("org.webjars", "bootstrap"),
+  "org.webjars" % "bootstrap-datepicker" % "1.6.1" exclude("org.webjars", "bootstrap"),
   "org.webjars" % "font-awesome" % "4.6.1",
   "org.webjars.bower" % "tether" % "1.1.1",
   "org.webjars.bower" % "bootstrap-validator" % "0.10.1",

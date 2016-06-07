@@ -27,7 +27,7 @@ $(document).ready(function() {
   });
 
   // enable datepicker plugin on all elements whose class contains datepicker
-  $('.datepicker').datepicker();
+  $('.datepicker').datepicker({orientation: 'bottom'});
 
   // enable select2 plugin on all elements whose class contains select2
   $('.select2').select2({
