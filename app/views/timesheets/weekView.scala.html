@@ -97,6 +97,59 @@
       });
     });
 
+    $("#confirmTimesheetUnlock-@project._id.get.stringify").click(function() {
+      var _this = $(this);
+      _this.html('<em>Submitting</em> <i class="fa fa-spinner fa-spin"></i>');
+      _this.attr('disabled', true); // no double submit
+      $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "@routes.TimesheetConsultant.withdraw(project._id.get.stringify, loggedUser.id.toString, date.toString("YYYY-MM-dd"))",
+        success: function(data) {
+          if(!data.success) {
+            console.log("Error: " + data.message);
+            _this.attr('disabled', false); // re-enable submit
+            _this.html('Re-submit');
+            $('#errorsLabel-@project._id.get.stringify').addClass('text-danger').html(data.message);
+          } else {
+            console.log("Success: " + data.message);
+            location.reload();
+          }
+        },
+        error: function () {
+          _this.attr('disabled', false); // re-enable submit
+          _this.html('Re-submit');
+        }
+      });
+    });
+
+    $("#resubmit-@project._id.get.stringify").click(function() {
+      var _this = $(this);
+      _this.html('<em>Submitting</em> <i class="fa fa-spinner fa-spin"></i>');
+      _this.attr('disabled', true); // no double submit
+      $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "@routes.TimesheetConsultant.reSubmit(project._id.get.stringify, loggedUser.id.toString, date.toString("YYYY-MM-dd"))",
+        success: function(data) {
+          if(!data.success) {
+            console.log("Error: " + data.message);
+            _this.attr('disabled', false); // re-enable submit
+            _this.html('Re-submit');
+            $('#errorsLabel-@project._id.get.stringify').addClass('text-danger').html(data.message);
+          } else {
+            console.log("Success: " + data.message);
+            _this.html("Resubmit");
+            location.reload();
+          }
+        },
+        error: function () {
+          _this.attr('disabled', false); // re-enable submit
+          _this.html('Re-submit');
+        }
+      });
+    });
+
     } @*end projectsMap*@
 
     function sumProjectHours(projectName) {
@@ -119,6 +172,31 @@
 
 @views.html.templates.mainApp(Messages("app.timesheets.weekView.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), weekViewScripts) {
 
+  @projects.map { project =>
+    <div class="modal fade" id="confirmTimesheetUnlockModal-@project._id.get.stringify" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">Confirm Unlock</h4>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to unlock this timesheet? This will unlock the entire timesheet.
+            <br/>
+            @if(timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.invoiced) {
+              <small class="text-danger">@Messages("timesheets.weekView.invoiced")</small>
+            }
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="confirmTimesheetUnlock-@project._id.get.stringify" class="btn btn-sm btn-danger">Yes, Unlock Timesheet</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
   <div class="card">
     <div class="card-block">
       <h3 class="card-title text-success">
@@ -127,7 +205,7 @@
         <div class="btn-group btn-group-sm pull-xs-right" role="group">
           <button id="prevWeek" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Go to previous week"><i class="fa fa-chevron-left fa-lg"></i></button>
           <button id="nextWeek" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Go to next week"><i class="fa fa-chevron-right fa-lg"></i></button>
-          <button id="showCalendar" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Browse Calender"><i class="fa fa-calendar fa-lg"></i></button>
+          <button id="showCalendar" type="button" class="btn btn-secondary"><i class="fa fa-calendar fa-lg"></i></button>
         </div>
       </h3>
       <h6 class="card-subtitle text-muted">@Messages("timesheets.weekView.subHeader", date.dayOfWeek().withMinimumValue().toString("dd MMM"), date.dayOfWeek().withMaximumValue().toString("dd MMM"))</h6>
@@ -180,10 +258,14 @@
                       <tr>
                         @for(weekDay <- (0 until 7).map(date.dayOfWeek().withMinimumValue().plusDays(_))) {
                           @{dateRange =  new Interval(project.startDate.get, project.endDate.get)}
-                          @if(dateRange.contains(weekDay)) { @* If provided week falls under project start and end dates *@
-                            @if(timesheets.exists(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart)) { @* If a timesheet exists for provided project and week date *@
-                              @if(timesheetDetails.exists(_.timesheetId == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get._id.get.stringify)) { @* If a timesheet detail exists for provided timesheet and day of the week *@
-                                @if(timesheets.find(t => t.projectCode == project._id.get.stringify && t.weekStart == weekStart).get.status == TimesheetStatus.SUBMITTED || timesheets.find(t => t.projectCode == project._id.get.stringify && t.weekStart == weekStart).get.status == TimesheetStatus.APPROVED) { @* If the timesheet is already submitted or approved *@
+                          @if(dateRange.contains(weekDay)) {
+                            @* If provided week falls under project start and end dates *@
+                            @if(timesheets.exists(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart)) {
+                              @* If a timesheet exists for provided project and week date *@
+                              @if(timesheetDetails.exists(_.timesheetId == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get._id.get.stringify)) {
+                                @* If a timesheet detail exists for provided timesheet and day of the week *@
+                                @if(timesheets.find(t => t.projectCode == project._id.get.stringify && t.weekStart == weekStart).get.status == TimesheetStatus.SUBMITTED || timesheets.find(t => t.projectCode == project._id.get.stringify && t.weekStart == weekStart).get.status == TimesheetStatus.APPROVED || timesheets.find(t => t.projectCode == project._id.get.stringify && t.weekStart == weekStart).get.status == TimesheetStatus.RE_SUBMITTED) {
+                                  @* If the timesheet is already submitted or approved or resubmitted *@
                                   <td class="col-8 text-xs-center">
                                     <input class="form-control count hours-@project._id.get.stringify text-xs-center" id="@weekDay.dayOfWeek().getAsShortText()-@project._id.get.stringify" name="@weekDay.toString("YYYY-MM-dd")" placeholder="00.00" onchange="sumProjectHours('@project._id.get.stringify');" value="@timesheetDetails.find(tsd => tsd.timesheetId == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get._id.get.stringify && tsd.workDay == weekDay).get.hours" disabled>
                                   </td>
@@ -219,15 +301,30 @@
               </form>
               <div class="card-footer clearfix">
                 <div class="btn-group btn-group-sm pull-xs-right" role="group">
-                  <button id="save-@project._id.get.stringify" type="button" class="btn btn-success-outline" disabled>Save</button>
                   @if(timesheets.exists(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart)) {
-                    @if(timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.status == TimesheetStatus.SAVED) {
-                      @* If timesheet exists and timesheet is saved then only enable submit button *@
-                      <button id="submit-@project._id.get.stringify" type="button" class="btn btn-primary-outline">Submit</button>
-                    } else {
-                      <button id="submit-@project._id.get.stringify" type="button" class="btn btn-primary-outline" disabled>Submit</button>
+                    @timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.status match {
+                      case TimesheetStatus.SAVED => {
+                        <button id="save-@project._id.get.stringify" type="button" class="btn btn-success-outline" disabled>Save</button>
+                        <button id="submit-@project._id.get.stringify" type="button" class="btn btn-primary-outline">Submit</button>
+                      }
+                      case TimesheetStatus.APPROVED => {
+                        <button id="withdraw-@project._id.get.stringify" type="button" data-toggle="modal" data-target="#confirmTimesheetUnlockModal-@project._id.get.stringify" class="btn btn-warning-outline">Withdraw</button>
+                      }
+                      case TimesheetStatus.RE_SAVED => {
+                        <button id="save-@project._id.get.stringify" type="button" class="btn btn-success-outline" disabled>Save</button>
+                        <button id="resubmit-@project._id.get.stringify" type="button" class="btn btn-primary-outline">Resubmit for Approval</button>
+                      }
+                      case TimesheetStatus.APPROVAL_WITHDRAWN => {
+                        <button id="save-@project._id.get.stringify" type="button" class="btn btn-success-outline" disabled>Save</button>
+                        <button id="resubmit-@project._id.get.stringify" type="button" class="btn btn-primary-outline" disabled>Resubmit for Approval</button>
+                      }
+                      case _ => {
+                        <button id="save-@project._id.get.stringify" type="button" class="btn btn-success-outline" disabled>Save</button>
+                        <button id="submit-@project._id.get.stringify" type="button" class="btn btn-primary-outline" disabled>Submit</button>
+                      }
                     }
                   } else {
+                    <button id="save-@project._id.get.stringify" type="button" class="btn btn-success-outline" disabled>Save</button>
                     <button id="submit-@project._id.get.stringify" type="button" class="btn btn-primary-outline" disabled>Submit</button>
                   }
                 </div>
@@ -238,17 +335,26 @@
                   case TimesheetStatus.SAVED => {
                     <small class="text-muted">@Html(Messages("timesheets.weekView.status.saved", timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.savedAt))</small>
                   }
+                  case TimesheetStatus.RE_SAVED => {
+                    <small class="text-muted">@Html(Messages("timesheets.weekView.status.reSaved", timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.reSavedAt))</small>
+                  }
                   case TimesheetStatus.SUBMITTED => {
                     <small class="text-primary">@Html(Messages("timesheets.weekView.status.submitted", timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.submittedAt))</small>
                   }
                   case TimesheetStatus.NOT_SUBMITTED => {
                     <small class="text-muted">@Messages("timesheets.weekView.status.notSubmitted")</small>
                   }
+                  case TimesheetStatus.RE_SUBMITTED => {
+                    <small class="text-primary">@Html(Messages("timesheets.weekView.status.reSubmitted", timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.resubmittedAt))</small>
+                  }
                   case TimesheetStatus.APPROVED => {
-                    <small class="text-success">@Html(Messages("timesheets.weekView.status.approved",timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.approvedAt, users.find(_.id.toString == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.approvedBy.get).get.profiles.head.fullName))</small>
+                    <small class="text-success">@Html(Messages("timesheets.weekView.status.approved",timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.approvedAt, users.find(_.id.toString == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.approvedBy.get).get.profiles.head.fullName.getOrElse("FNU LNU")))</small>
                   }
                   case TimesheetStatus.DENIED => {
-                    <small class="text-danger">@Html(Messages("timesheets.weekView.status.denied", timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.disapprovedAt, users.find(_.id.toString == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.disapprovedBy.get).get.profiles.head.fullName))</small>
+                    <small class="text-danger">@Html(Messages("timesheets.weekView.status.denied", timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.disapprovedAt, users.find(_.id.toString == timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.disapprovedBy.get).get.profiles.head.fullName.getOrElse("FNU LNU")))</small>
+                  }
+                  case TimesheetStatus.APPROVAL_WITHDRAWN => {
+                    <small class="text-warning">@Html(Messages("timesheets.weekView.status.withdraw", timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.withdrawnAt))</small>
                   }
                 }
               }

@@ -285,10 +285,14 @@ timesheets.weekView.noAssignments.header=You have no project's assigned for this
 timesheets.weekView.noAssignments.description=Your project's and their respective start and end dates are as follows
 timesheets.weekView.noAssignments.details=<b>{0}</b><br\\>Start Date: {1}, End date: {2}.
 timesheets.weekView.status.saved=Saved <span class="timeago" date-value="{0}"></span>
+timesheets.weekView.status.reSaved=Withdrawn timesheet saved <span class="timeago" date-value="{0}"></span>
 timesheets.weekView.status.submitted=Submitted <span class="timeago" date-value="{0}"></span>. Awaiting approval.
 timesheets.weekView.status.notSubmitted=Not submitted.
 timesheets.weekView.status.approved=Approved <span class="timeago" date-value="{0}"></span>, by {1}.
 timesheets.weekView.status.denied=Denied <span class="timeago" date-value="{0}"></span>, by {1}.
+timesheets.weekView.status.reSubmitted=Re submitted <span class="timeago" date-value="{0}"></span>. Awaiting approval.
+timesheets.weekView.status.withdraw=Approval withdrawn <span class="timeago" date-value="{0}"></span>.
+timesheets.weekView.invoiced=This entry was invoiced. Editing will not update the invoice or notify the administrator.
 
 #
 # Invoices

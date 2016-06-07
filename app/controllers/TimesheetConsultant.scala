@@ -23,6 +23,8 @@ class TimesheetConsultant @Inject() (val messagesApi: MessagesApi,
   val mailer: Mailer)(implicit config: Config)
   extends Controller with I18nSupport {
 
+  private val logger = Logger(this.getClass)
+
   def view(userEmail: String, date: String) = silhouette.SecuredAction((WithUserEmail(userEmail) && WithRole(Role.CONSULTANT)) || (WithRole(Role.OWNER) || WithRole(Role.ADMIN))).async { implicit request =>
     // TODO handle malformed dates such as 2015.12.31 or 31-12-2015
     val dateTime = DateTime.parse(date)
@@ -58,7 +60,7 @@ class TimesheetConsultant @Inject() (val messagesApi: MessagesApi,
           case Some(timesheet) =>
             addTimesheetDetail(fields, timesheet)
           case _ =>
-            Timesheet.insert(Timesheet(projectCode, userId, DateTime.parse(date).dayOfWeek().withMinimumValue(), DateTime.parse(date).dayOfWeek().withMaximumValue(), None, None, None, None, None, None)).map {
+            Timesheet.insert(Timesheet(projectCode, userId, DateTime.parse(date).dayOfWeek().withMinimumValue(), DateTime.parse(date).dayOfWeek().withMaximumValue(), None, None, None, None, None, None, None, None, None)).map {
               case Left(ex) =>
                 Future.successful(Ok(Json.obj("success" -> false, "message" -> s"Failed while inserting timesheet. Reason: ${ex.message}")))
               case Right(timesheet) =>
@@ -85,6 +87,29 @@ class TimesheetConsultant @Inject() (val messagesApi: MessagesApi,
     }
   }
 
+  def withdraw(projectCode: String, userId: String, date: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN) || WithRole(Role.CONSULTANT)).async { implicit request =>
+    val timesheet = Timesheet.findOne(Json.obj("projectCode" -> projectCode, "consultantId" -> userId, "weekStart" -> DateTime.parse(date).dayOfWeek().withMinimumValue(), "weekEnd" -> DateTime.parse(date).dayOfWeek().withMaximumValue()))
+    timesheet.map {
+      case Some(ts) =>
+        Timesheet.update(ts._id.get.stringify, ts.copy(status = TimesheetStatus.APPROVAL_WITHDRAWN, withdrawnAt = Some(DateTime.now)))
+        Ok(Json.obj("success" -> true, "message" -> "Successfully updated timesheet"))
+      case _ =>
+        BadRequest(Json.obj("success" -> false, "message" -> s"Cannot find timesheet for the specified details"))
+    }
+  }
+
+  def reSubmit(projectCode: String, userId: String, date: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN) || WithRole(Role.CONSULTANT)).async { implicit request =>
+    val timesheet = Timesheet.findOne(Json.obj("projectCode" -> projectCode, "consultantId" -> userId, "weekStart" -> DateTime.parse(date).dayOfWeek().withMinimumValue(), "weekEnd" -> DateTime.parse(date).dayOfWeek().withMaximumValue()))
+    timesheet.map {
+      case Some(ts) =>
+        Timesheet.update(ts._id.get.stringify, ts.copy(status = TimesheetStatus.RE_SUBMITTED, resubmittedAt = Some(DateTime.now)))
+        mailer.timesheetSubmission(request.identity.profiles.map(_.email.get).head, ts)
+        Ok(Json.obj("success" -> true, "message" -> s"Successfully updated timesheet"))
+      case _ =>
+        BadRequest(Json.obj("success" -> false, "message" -> s"Cannot find timesheet for the specified details"))
+    }
+  }
+
   private[this] def addTimesheetDetail(fields: scala.collection.Map[String, JsValue], timesheet: Timesheet) = {
     fields.foreach { case (dateString, hoursString) =>
       TimesheetDetail.findOne(Json.obj("workDay" -> DateTime.parse(dateString), "timesheetId" -> timesheet._id.get.stringify)).map {
@@ -99,13 +124,24 @@ class TimesheetConsultant @Inject() (val messagesApi: MessagesApi,
       }
     }
     // Update totalHours
-    Timesheet.update(
-      timesheet._id.get.stringify, timesheet.copy(
-        totalHours = fields.map { case(dateString, hoursString) => hoursString.as[String].toDouble }.foldLeft(0.0)(_ + _),
-        status = TimesheetStatus.SAVED,
-        savedAt = Some(DateTime.now)
+    if (timesheet.withdrawnAt.isDefined) {
+      Timesheet.update(
+        timesheet._id.get.stringify, timesheet.copy(
+          totalHours = fields.map { case(dateString, hoursString) => hoursString.as[String].toDouble }.foldLeft(0.0)(_ + _),
+          status = TimesheetStatus.RE_SAVED,
+          reSavedAt = Some(DateTime.now)
+        )
       )
-    )
+    } else {
+      Timesheet.update(
+        timesheet._id.get.stringify, timesheet.copy(
+          totalHours = fields.map { case(dateString, hoursString) => hoursString.as[String].toDouble }.foldLeft(0.0)(_ + _),
+          status = TimesheetStatus.SAVED,
+          savedAt = Some(DateTime.now)
+        )
+      )
+    }
+
   }
 
 }

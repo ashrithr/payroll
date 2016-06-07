@@ -47,6 +47,8 @@ POST     /timesheets/deny/:id                         controllers.TimesheetAdmin
 GET      /timesheets/:userId/:date                    controllers.TimesheetConsultant.view(userId: String, date: String)
 POST     /timesheets/save/:projectId/:userId/:date    controllers.TimesheetConsultant.save(projectId: String, userId: String, date: String)
 POST     /timesheets/submit/:projectId/:userId/:date  controllers.TimesheetConsultant.submit(projectId: String, userId: String, date: String)
+POST     /timesheets/withdraw/:projectId/:userId/:date controllers.TimesheetConsultant.withdraw(projectId: String, userId: String, date: String)
+POST     /timesheets/resubmit/:projectId/:userId/:date controllers.TimesheetConsultant.reSubmit(projectId: String, userId: String, date: String)
 
 # Payroll Module
 GET      /invoices                                    controllers.InvoiceController.index()

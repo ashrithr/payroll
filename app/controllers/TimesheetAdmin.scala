@@ -189,7 +189,7 @@ class TimesheetAdmin @Inject() (val messagesApi: MessagesApi,
 
   def pendingTimesheets = silhouette.SecuredAction(WithRole(Role.ADMIN) || WithRole(Role.OWNER)).async { implicit request =>
     for {
-      timesheets <- Timesheet.find(Json.obj("status" -> TimesheetStatus.SUBMITTED))
+      timesheets <- Timesheet.find(Json.obj("status" -> Json.obj("$in" -> List(TimesheetStatus.SUBMITTED, TimesheetStatus.RE_SUBMITTED))))
       consultants <- userService.findAll
     } yield Ok(views.html.timesheets.pendingTimesheets(request.identity, request.authenticator.loginInfo, timesheets, consultants))
   }

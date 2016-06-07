@@ -79,7 +79,17 @@ class InvoiceController @Inject() (val messagesApi: MessagesApi,
             priceOfConsultant.toDouble,
             priceOfConsultant.toDouble * totalHours.toDouble
           )
+          // create invoice
           Invoice.insert(invoice)
+          // mark all timesheets as invoiced
+          timesheets.map { ts =>
+            Timesheet.update(
+              ts._id.get.stringify,
+              ts.copy(
+                invoiced = true
+              )
+            )
+          }
           Redirect(routes.InvoiceController.index()).flashing("success" -> "Invoice saved!")
         }
       }
