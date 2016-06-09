@@ -67,7 +67,17 @@ class Auth @Inject() (
               avatarUrl = None)
             for {
               avatarUrl <- avatarService.retrieveURL(signUpData.email)
-              user <- userService.save(User(id = UUID.randomUUID(), profiles = List(profile.copy(avatarUrl = avatarUrl)), role = models.Role.SIMPLE_USER))
+              usersCount <- userService.findAll.map(_.size)
+              user <- userService.save(
+                User(
+                  id = UUID.randomUUID(),
+                  profiles = List(profile.copy(avatarUrl = avatarUrl)),
+                  role = if (usersCount == 0) {
+                    models.Role.OWNER
+                  } else {
+                    models.Role.SIMPLE_USER
+                  }
+                ))
               _ <- authInfoRepository.add(loginInfo, passwordHasher.hash(signUpData.password))
               token <- userTokenService.save(UserToken.create(user.id, signUpData.email, isSignUp = true))
             } yield {
