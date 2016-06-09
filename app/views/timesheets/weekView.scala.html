@@ -185,8 +185,10 @@
           <div class="modal-body">
             Are you sure you want to unlock this timesheet? This will unlock the entire timesheet.
             <br/>
-            @if(timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.invoiced) {
-              <small class="text-danger">@Messages("timesheets.weekView.invoiced")</small>
+            @if(timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).isDefined) {
+              @if(timesheets.find(ts => ts.projectCode == project._id.get.stringify && ts.weekStart == weekStart).get.invoiced) {
+                <small class="text-danger">@Messages("timesheets.weekView.invoiced")</small>
+              }
             }
           </div>
           <div class="modal-footer">
