@@ -1,0 +1,53 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, contactForm: Form[forms.ContactForm.FormData], contact: Contact)(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
+
+@implicitFieldConstructor = @{b4.horizontal.fieldConstructor("col-md-3","col-md-6")}
+
+@views.html.templates.mainApp(Messages("app.timesheets.contact.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+  <div class="card">
+  @b4.form(routes.TimesheetAdmin.editContact(contact._id.get.stringify), 'class -> "card-block") {
+    <fieldset>
+      <legend>@Messages("contact.update.legend")</legend>
+
+      @b4.text(contactForm("firstName"),
+        '_label -> Messages("modal.contact.form.firstName"),
+        '_placeholder -> Messages("modal.contact.form.placeholder.firstName"),
+        'value -> contact.firstName,
+        'autofocus -> true)
+
+      @b4.text(contactForm("lastName"),
+        '_label -> Messages("modal.contact.form.lastName"),
+        '_placeholder -> Messages("modal.contact.form.placeholder.lastName"),
+        'value -> contact.lastName)
+
+      @b4.email(contactForm("email"),
+        '_label -> Messages("modal.contact.form.email"),
+        '_placeholder -> Messages("modal.contact.form.placeholder.email"),
+        'value -> contact.email)
+
+      @b4.text(contactForm("title"),
+        '_label -> Messages("modal.contact.form.contactTitle"),
+        '_placeholder -> Messages("modal.contact.form.placeholder.contactTitle"),
+        'value -> contact.title.getOrElse(""))
+
+      @b4.text(contactForm("officeNum"),
+        '_label -> Messages("modal.contact.form.officeNum"),
+        '_placeholder -> Messages("modal.contact.form.placeholder.officeNum"),
+        'value -> contact.officeNum.getOrElse(""))
+
+      @b4.text(contactForm("mobileNum"),
+        '_label -> Messages("modal.contact.form.mobileNum"),
+        '_placeholder -> Messages("modal.contact.form.placeholder.mobileNum"),
+        'value -> contact.mobileNum.getOrElse(""))
+
+      @b4.text(contactForm("faxNum"),
+        '_label -> Messages("modal.contact.form.faxNum"),
+        '_placeholder -> Messages("modal.contact.form.placeholder.faxNum"),
+        'value -> contact.faxNum.getOrElse(""))
+
+      @b4.submit('class -> "btn btn-primary"){ @Messages("contact.form.update") }
+    </fieldset>
+  }
+  </div>
+}

@@ -1,0 +1,61 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, vendorForm: Form[forms.VendorForm.FormData], vendor: Vendor, contacts: List[Contact])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
+
+@implicitFieldConstructor = @{b4.horizontal.fieldConstructor("col-md-3","col-md-6")}
+
+@views.html.templates.mainApp(Messages("app.timesheets.vendor.title"), tab = "timesheets", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+
+  <div class="card">
+  @b4.form(routes.TimesheetAdmin.editVendor(vendor._id.get.stringify), 'class -> "card-block") {
+    <fieldset>
+      <legend>@Messages("vendor.update.legend")</legend>
+
+      @b4.text(vendorForm("companyName"),
+        '_label -> Messages("modal.vendor.form.companyName"),
+        '_placeholder -> Messages("modal.vendor.form.placeholder.companyName"),
+        'value -> vendor.companyName)
+
+      @b4.text(vendorForm("companyAddress"),
+        '_label -> Messages("modal.vendor.form.companyAddress"),
+        '_placeholder -> Messages("modal.vendor.form.placeholder.companyAddress"),
+        'value -> vendor.companyAddress.getOrElse(""))
+
+      @*TODO: Select2 with multi not working with play-bootstrap*@
+      <fieldset class="form-group row" id="primaryContacts_field">
+        <label class="control-label form-control-label col-md-3" for="primaryContacts">Primary Contacts</label>
+        <div class="col-md-6">
+          <select id="primaryContacts" name="primaryContacts[]" aria-describedby="primaryContacts_info_0" class="form-control select2" multiple="true">
+          @contacts.map { contact =>
+            @if(vendor.primaryContacts.contains(contact._id.get.stringify)) {
+              <option value="@contact._id.get.stringify" selected>@contact.firstName @contact.lastName</option>
+            } else {
+              <option value="@contact._id.get.stringify">@contact.firstName @contact.lastName</option>
+            }
+          }
+          </select>
+          <span id="primaryContacts_info_0" class="help-block">Select at-least one contact. This contact will be used for email communication.</span>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-group row" id="secondaryContacts_field">
+        <label class="control-label form-control-label col-md-3" for="secondaryContacts">Secondary Contacts</label>
+        <div class="col-md-6">
+          <select id="secondaryContacts" name="secondaryContacts[]" aria-describedby="secondaryContacts_info_0" class="form-control select2" multiple="true">
+          @contacts.map { contact =>
+            @if(vendor.secondaryContacts.getOrElse(Seq()).contains(contact._id.get.stringify)) {
+              <option value="@contact._id.get.stringify" selected>@contact.firstName @contact.lastName</option>
+            } else {
+              <option value="@contact._id.get.stringify">@contact.firstName @contact.lastName</option>
+            }
+          }
+          </select>
+        </div>
+      </fieldset>
+
+      @b4.submit('class -> "btn btn-primary-outline"){ @Messages("vendor.form.update") }
+    </fieldset>
+  }
+  </div>
+
+}

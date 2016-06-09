@@ -163,7 +163,6 @@
               @Messages("timesheets.admin.tab.contact.create")
               </button>
             </h4>
-            <div class="spacer"></div>
             <p class="text-muted">@Messages("timesheets.admin.tab.contact.description")</p>
 
             @contacts match {
@@ -173,7 +172,7 @@
                   <ul class="list-group">
                     <li class="list-group-item">
                       <b class="list-group-item-heading">
-                        @contact.firstName @contact.lastName
+                        <a href="@routes.TimesheetAdmin.editContact(contact._id.get.stringify)">@contact.firstName @contact.lastName</a>
                       <span class="pull-xs-right">
                         <span class="label label-info timeago" date-value="@contact.created"></span>
                       </span>
@@ -196,7 +195,7 @@
               @Messages("timesheets.admin.tab.client.create")
               </button>
             </h4>
-            <div class="spacer"></div>
+            <p class="text-muted">@Messages("timesheets.admin.tab.client.description")</p>
 
             @clients match {
               case Nil => { <p class="lead">@Messages("timesheets.admin.tab.client.none")</p> }
@@ -205,7 +204,7 @@
                   <ul class="list-group">
                     <li class="list-group-item">
                       <b class="list-group-item-heading">
-                        @client.companyName
+                        <a href="@routes.TimesheetAdmin.editClient(client._id.get.stringify)">@client.companyName</a>
                       <span class="pull-xs-right">
                         <span class="label label-info timeago" date-value="@client.created"></span>
                       </span>
@@ -228,7 +227,7 @@
               @Messages("timesheets.admin.tab.vendor.create")
               </button>
             </h4>
-            <div class="spacer"></div>
+            <p class="text-muted">@Messages("timesheets.admin.tab.vendor.description")</p>
 
             @vendors match {
               case Nil => {
@@ -239,7 +238,7 @@
                   <ul class="list-group">
                     <li class="list-group-item">
                       <b class="list-group-item-heading">
-                        @vendor.companyName
+                        <a href="@routes.TimesheetAdmin.editVendor(vendor._id.get.stringify)">@vendor.companyName</a>
                       <span class="pull-xs-right">
                         <span class="label label-info timeago" date-value="@vendor.created"></span>
                       </span>

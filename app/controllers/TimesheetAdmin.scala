@@ -162,7 +162,7 @@ class TimesheetAdmin @Inject() (val messagesApi: MessagesApi,
   def editProject(id: String) = silhouette.SecuredAction(WithRole(Role.ADMIN) || WithRole(Role.OWNER)).async { implicit request =>
     ProjectForm.form.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(Redirect(routes.TimesheetAdmin.createProjectForm()).flashing("error" -> "Errors in form"))
+        Future.successful(Redirect(routes.TimesheetAdmin.editProjectForm(id)).flashing("error" -> "Errors in form"))
       },
       p => {
         Project.findById(id).map { proj =>
@@ -182,6 +182,95 @@ class TimesheetAdmin @Inject() (val messagesApi: MessagesApi,
             )
           )
           Redirect(routes.TimesheetAdmin.projects()).flashing("success" -> "Project updated!")
+        }
+      }
+    )
+  }
+
+  def editContactForm(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
+    for {
+      contact <- Contact.findById(id)
+    } yield Ok(views.html.timesheets.editContact(request.identity, request.authenticator.loginInfo, ContactForm.form, contact.get))
+  }
+
+  def editContact(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
+    ContactForm.form.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.TimesheetAdmin.editContactForm(id)).flashing("error" -> "Errors in the form"))
+      },
+      c => {
+        Contact.findById(id).map { contact =>
+          Contact.update(
+            id,
+            contact.get.copy(
+              firstName = c.firstName,
+              lastName = c.lastName,
+              email = c.email,
+              title = c.title,
+              officeNum = c.officeNum,
+              mobileNum = c.mobileNum,
+              faxNum = c.faxNum
+            )
+          )
+          Redirect(routes.TimesheetAdmin.index() + "#contacts").flashing("success" -> "Contact updated!")
+        }
+      }
+    )
+  }
+
+  def editClientForm(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
+    for {
+      client <- Client.findById(id)
+      contacts <- Contact.find()
+    } yield Ok(views.html.timesheets.editClient(request.identity, request.authenticator.loginInfo, ClientForm.form, client.get, contacts))
+  }
+
+  def editClient(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
+    ClientForm.form.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.TimesheetAdmin.editClientForm(id)).flashing("error" -> "Errors in the form"))
+      },
+      c => {
+        Client.findById(id).map { client =>
+          Client.update(
+            id,
+            client.get.copy(
+              companyAddress = c.companyAddress,
+              companyName = c.companyName,
+              primaryContacts = c.primaryContacts,
+              secondaryContacts = c.secondaryContacts
+            )
+          )
+          Redirect(routes.TimesheetAdmin.index() + "#clients").flashing("success" -> "Client updated!")
+        }
+      }
+    )
+  }
+
+  def editVendorForm(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
+    for {
+      vendor <- Vendor.findById(id)
+      contacts <- Contact.find()
+    } yield Ok(views.html.timesheets.editVendor(request.identity, request.authenticator.loginInfo, VendorForm.form, vendor.get, contacts))
+  }
+
+  def editVendor(id: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
+    VendorForm.form.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.TimesheetAdmin.editVendorForm(id)).flashing("error" -> "Errors in the form"))
+      },
+      v => {
+        Vendor.findById(id).map { vendor =>
+          Vendor.update(
+            id,
+            vendor.get.copy(
+              companyAddress = v.companyAddress,
+              companyName = v.companyName,
+              primaryContacts = v.primaryContacts,
+              secondaryContacts = v.secondaryContacts
+            )
+          )
+          Redirect(routes.TimesheetAdmin.index() + "#vendors").flashing("success" -> "Vendor updated!")
         }
       }
     )

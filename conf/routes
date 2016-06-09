@@ -41,6 +41,12 @@ POST     /timesheets/projects/:id/consultants         controllers.TimesheetAdmin
 DELETE   /timesheets/projects/:id/consultants/:cId    controllers.TimesheetAdmin.removeConsultantFromProject(id: String, cId: String)
 GET      /timesheets/projects/:id/edit                controllers.TimesheetAdmin.editProjectForm(id: String)
 POST     /timesheets/projects/:id/edit                controllers.TimesheetAdmin.editProject(id: String)
+GET      /timesheets/contacts/:id/edit                controllers.TimesheetAdmin.editContactForm(id: String)
+POST     /timesheets/contacts/:id/edit                controllers.TimesheetAdmin.editContact(id: String)
+GET      /timesheets/clients/:id/edit                 controllers.TimesheetAdmin.editClientForm(id: String)
+POST     /timesheets/clients/:id/edit                 controllers.TimesheetAdmin.editClient(id: String)
+GET      /timesheets/vendors/:id/edit                 controllers.TimesheetAdmin.editVendorForm(id: String)
+POST     /timesheets/vendors/:id/edit                 controllers.TimesheetAdmin.editVendor(id: String)
 GET      /timesheets/pending                          controllers.TimesheetAdmin.pendingTimesheets
 POST     /timesheets/approve/:id                      controllers.TimesheetAdmin.approveTimesheet(id: String)
 POST     /timesheets/deny/:id                         controllers.TimesheetAdmin.denyTimesheet(id: String)

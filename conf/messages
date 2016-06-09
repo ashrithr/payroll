@@ -169,15 +169,17 @@ timesheets.admin.header=Timesheets Admin Portal
 
 timesheets.admin.tab.contact.header=Contacts
 timesheets.admin.tab.contact.create=Create Contact
-timesheets.admin.tab.contact.description=Contacts are point of contacts for a particular vendor or client. You have to create contact's before creating Client or Vendor's.
+timesheets.admin.tab.contact.description=Contacts are point of contact for a particular vendor or client. You have to create contact's before creating Client or Vendor's.
 timesheets.admin.tab.contact.none=No contacts have been added yet!
 
 timesheets.admin.tab.client.header=Clients
 timesheets.admin.tab.client.create=Create Client
+timesheets.admin.tab.client.description=Clients are the end customer who receives the services provided by vendors
 timesheets.admin.tab.client.none=No Clients have been added yet!
 
 timesheets.admin.tab.vendor.header=Vendors
 timesheets.admin.tab.vendor.create=Create Vendor
+timesheets.admin.tab.vendor.description=Vendors are the end customer who receives the services from the consulting firms
 timesheets.admin.tab.vendor.none=No Vendors have been added yet!
 
 modal.contact.form.title=Create Contact
@@ -196,6 +198,8 @@ modal.contact.form.placeholder.mobileNum=Mobile Number of the contact
 modal.contact.form.faxNum=Fax Number
 modal.contact.form.placeholder.faxNum=Fax Number of the contact
 modal.contact.form.submit=Create Contact
+contact.update.legend=Update Contact Details
+contact.form.update=Update Contact
 
 modal.client.form.title=Create Client
 modal.client.form.companyName=Company Name
@@ -206,6 +210,8 @@ modal.client.form.primaryContacts=Primary Contacts
 modal.client.form.help.primaryContacts=Select at-least one contact. This contact will be used for email communication.
 modal.client.form.secondaryContacts=Secondary Contacts
 modal.client.form.submit=Create Client
+client.update.legend=Update Client Details
+client.form.update=Update Client
 
 modal.vendor.form.title=Create Vendor
 modal.vendor.form.companyName=Company Name
@@ -216,6 +222,8 @@ modal.vendor.form.primaryContacts=Primary Contacts
 modal.vendor.form.help.primaryContacts=Select at-least one contact. This contact will be used for email communication.
 modal.vendor.form.secondaryContacts=Secondary Contacts
 modal.vendor.form.submit=Create Vendor
+vendor.update.legend=Update Vendor Details
+vendor.form.update=Update Vendor
 
 # Timesheets - Admin Projects
 app.timesheets.projects.title=Timesheets - Projects
@@ -242,6 +250,7 @@ project.vendor.label=Vendor
 project.client.label=Client
 project.payment.net.label=Payment Net
 project.submit=Submit Project
+project.update=Update Project
 
 # Timesheets - Admin Project
 app.timesheets.project.title=Timesheets - Project
