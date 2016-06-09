@@ -3,17 +3,25 @@
 @(loggedUser: Option[User], loginInfo: Option[LoginInfo])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
 
 @views.html.templates.mainApp(Messages("app.title"), tab = "index", loggedUser = loggedUser, loginInfo = loginInfo) {
-  <h2 class="text-primary">@Messages("index.header")</h2>
-  <p class="lead">
-  @loggedUser.map { user =>
-    @Html(Messages("index.logged", user.fullName(loginInfo.get).getOrElse(Messages("index.none")), routes.Application.profile)) <br/>
-    @Html(Messages("index.signOut", routes.Auth.signOut)) <br/>
-    @if(user.role == Role.SIMPLE_USER) {
-      <b>@Messages("index.simpleUser.help")</b>
-    }
-  }.getOrElse {
-    @Html(Messages("index.notLogged", routes.Auth.signIn, routes.Auth.startSignUp)) <br/>
-    @Html(Messages("index.resetPassword", routes.Auth.startResetPassword))
-  }
-  </p>
+
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("index.header")
+      </h3>
+      <p>
+      @loggedUser.map { user =>
+        @Html(Messages("index.logged", user.fullName(loginInfo.get).getOrElse(Messages("index.none")), routes.Application.profile)) <br/>
+        @Html(Messages("index.signOut", routes.Auth.signOut)) <br/>
+        @if(user.role == Role.SIMPLE_USER) {
+          <b>@Messages("index.simpleUser.help")</b>
+        }
+      }.getOrElse {
+        @Html(Messages("index.notLogged", routes.Auth.signIn, routes.Auth.startSignUp)) <br/>
+        @Html(Messages("index.resetPassword", routes.Auth.startResetPassword))
+      }
+      </p>
+    </div>
+  </div>
+
 }

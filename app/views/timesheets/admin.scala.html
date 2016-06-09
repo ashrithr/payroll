@@ -133,122 +133,128 @@
     </div>
   </div>
 
-  <h2 class="text-primary">@Messages("timesheets.admin.header")</h2>
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+      @Messages("timesheets.admin.header")
+      </h3>
+    </div>
 
-  <div class="spacer"></div>
+    <div class="card-block">
+      <ul class="nav nav-tabs" role="tablist" id="myTabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="tab" href="#contacts" role="tab">Contacts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#clients" role="tab">Clients</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#vendors" role="tab">Vendors</a>
+        </li>
+      </ul>
 
-  <ul class="nav nav-tabs" role="tablist" id="myTabs">
-    <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#contacts" role="tab">Contacts</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#clients" role="tab">Clients</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#vendors" role="tab">Vendors</a>
-    </li>
-  </ul>
-
-  <div class="tab-content">
-    <div class="tab-pane active" id="contacts" role="tabpanel">
-      <div class="container">
-        <div class="spacer"></div>
-        <h4>
-          @Messages("timesheets.admin.tab.contact.header")
-            <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createContactModal">
+      <div class="tab-content">
+        <div class="tab-pane active" id="contacts" role="tabpanel">
+          <div class="container">
+            <div class="spacer"></div>
+            <h4>
+              @Messages("timesheets.admin.tab.contact.header")
+              <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createContactModal">
               @Messages("timesheets.admin.tab.contact.create")
-            </button>
-        </h4>
-        <div class="spacer"></div>
-        <p class="text-muted">@Messages("timesheets.admin.tab.contact.description")</p>
+              </button>
+            </h4>
+            <div class="spacer"></div>
+            <p class="text-muted">@Messages("timesheets.admin.tab.contact.description")</p>
 
-        @contacts match {
-          case Nil => { <p class="lead">@Messages("timesheets.admin.tab.contact.none")</p> }
-          case _ => {
-            @contacts.map { contact =>
-              <ul class="list-group">
-                <li class="list-group-item">
-                  <b class="list-group-item-heading">
-                    @contact.firstName @contact.lastName
-                    <span class="pull-xs-right">
-                      <span class="label label-info timeago" date-value="@contact.created"></span>
-                    </span>
-                  </b>
-                  <p class="list-group-item-text">@contact.email</p>
-                </li>
-              </ul>
+            @contacts match {
+              case Nil => { <p class="lead">@Messages("timesheets.admin.tab.contact.none")</p> }
+              case _ => {
+                @contacts.map { contact =>
+                  <ul class="list-group">
+                    <li class="list-group-item">
+                      <b class="list-group-item-heading">
+                        @contact.firstName @contact.lastName
+                      <span class="pull-xs-right">
+                        <span class="label label-info timeago" date-value="@contact.created"></span>
+                      </span>
+                      </b>
+                      <p class="list-group-item-text">@contact.email</p>
+                    </li>
+                  </ul>
+                }
+              }
             }
-          }
-        }
-      </div>
-    </div>
+          </div>
+        </div>
 
-    <div class="tab-pane" id="clients" role="tabpanel">
-      <div class="container">
-        <div class="spacer"></div>
-        <h4>
-          @Messages("timesheets.admin.tab.client.header")
-            <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createClientModal">
+        <div class="tab-pane" id="clients" role="tabpanel">
+          <div class="container">
+            <div class="spacer"></div>
+            <h4>
+              @Messages("timesheets.admin.tab.client.header")
+              <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createClientModal">
               @Messages("timesheets.admin.tab.client.create")
-            </button>
-        </h4>
-        <div class="spacer"></div>
+              </button>
+            </h4>
+            <div class="spacer"></div>
 
-        @clients match {
-          case Nil => { <p class="lead">@Messages("timesheets.admin.tab.client.none")</p> }
-          case _ => {
-            @clients.map { client =>
-              <ul class="list-group">
-                <li class="list-group-item">
-                  <b class="list-group-item-heading">
-                    @client.companyName
-                    <span class="pull-xs-right">
-                      <span class="label label-info timeago" date-value="@client.created"></span>
-                    </span>
-                  </b>
-                  <p class="list-group-item-text">@client.companyAddress</p>
-                </li>
-              </ul>
+            @clients match {
+              case Nil => { <p class="lead">@Messages("timesheets.admin.tab.client.none")</p> }
+              case _ => {
+                @clients.map { client =>
+                  <ul class="list-group">
+                    <li class="list-group-item">
+                      <b class="list-group-item-heading">
+                        @client.companyName
+                      <span class="pull-xs-right">
+                        <span class="label label-info timeago" date-value="@client.created"></span>
+                      </span>
+                      </b>
+                      <p class="list-group-item-text">@client.companyAddress</p>
+                    </li>
+                  </ul>
+                }
+              }
             }
-          }
-        }
-      </div>
-    </div>
+          </div>
+        </div>
 
-    <div class="tab-pane" id="vendors" role="tabpanel">
-      <div class="container">
-        <div class="spacer"></div>
-        <h4>
-          @Messages("timesheets.admin.tab.vendor.header")
-            <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createVendorModal">
+        <div class="tab-pane" id="vendors" role="tabpanel">
+          <div class="container">
+            <div class="spacer"></div>
+            <h4>
+              @Messages("timesheets.admin.tab.vendor.header")
+              <button type="button" class="btn btn-primary btn-primary-outline pull-xs-right" data-toggle="modal" data-target="#createVendorModal">
               @Messages("timesheets.admin.tab.vendor.create")
-            </button>
-        </h4>
-        <div class="spacer"></div>
+              </button>
+            </h4>
+            <div class="spacer"></div>
 
-        @vendors match {
-          case Nil => {
-            <p class="lead">@Messages("timesheets.admin.tab.vendor.none")</p>
-          }
-          case _ => {
-            @vendors.map { vendor =>
-              <ul class="list-group">
-                <li class="list-group-item">
-                  <b class="list-group-item-heading">
-                    @vendor.companyName
-                  <span class="pull-xs-right">
-                    <span class="label label-info timeago" date-value="@vendor.created"></span>
-                  </span>
-                  </b>
-                  <p class="list-group-item-text">@vendor.companyAddress</p>
-                </li>
-              </ul>
+            @vendors match {
+              case Nil => {
+                <p class="lead">@Messages("timesheets.admin.tab.vendor.none")</p>
+              }
+              case _ => {
+                @vendors.map { vendor =>
+                  <ul class="list-group">
+                    <li class="list-group-item">
+                      <b class="list-group-item-heading">
+                        @vendor.companyName
+                      <span class="pull-xs-right">
+                        <span class="label label-info timeago" date-value="@vendor.created"></span>
+                      </span>
+                      </b>
+                      <p class="list-group-item-text">@vendor.companyAddress</p>
+                    </li>
+                  </ul>
+                }
+              }
             }
-          }
-        }
+          </div>
+        </div>
+
       </div>
     </div>
-
   </div>
 
 }

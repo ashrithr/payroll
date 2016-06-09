@@ -3,37 +3,43 @@
 @implicitFieldConstructor = @{b4.horizontal.fieldConstructor("col-md-3","col-md-6")}
 
 @views.html.templates.mainAuth(Messages("signup.title"), tab = "signup") {
-  @b4.form(routes.Auth.handleStartSignUp) {
-    <fieldset>
-      <legend>@Messages("signup.legend")</legend>
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+      @Messages("signup.legend")
+      </h3>
 
-      @b4.email(signUpForm("email"),
-        '_label -> Messages("signup.email"),
-        'placeholder -> Messages("signup.email"),
-        'autofocus -> true)
+      @b4.form(routes.Auth.handleStartSignUp) {
+        <fieldset>
+          @b4.email(signUpForm("email"),
+            '_label -> Messages("signup.email"),
+            'placeholder -> Messages("signup.email"),
+            'autofocus -> true)
 
-      @b4.text(signUpForm("firstName"),
-        '_label -> Messages("signup.firstName"),
-        'placeholder -> Messages("signup.firstName"))
+          @b4.text(signUpForm("firstName"),
+            '_label -> Messages("signup.firstName"),
+            'placeholder -> Messages("signup.firstName"))
 
-      @b4.text(signUpForm("lastName"),
-        '_label -> Messages("signup.lastName"),
-        'placeholder -> Messages("signup.lastName"))
+          @b4.text(signUpForm("lastName"),
+            '_label -> Messages("signup.lastName"),
+            'placeholder -> Messages("signup.lastName"))
 
-      @b4.password(signUpForm("password.password1"),
-        '_label -> Messages("signup.password"),
-        'placeholder -> Messages("signup.password"),
-        '_help -> Messages("signup.password.help"))
+          @b4.password(signUpForm("password.password1"),
+            '_label -> Messages("signup.password"),
+            'placeholder -> Messages("signup.password"),
+            '_help -> Messages("signup.password.help"))
 
-      @b4.password(signUpForm("password.password2"),
-        '_label -> Messages("signup.verify"),
-        'placeholder -> Messages("signup.password"),
-        '_error -> signUpForm.error("password"))
+          @b4.password(signUpForm("password.password2"),
+            '_label -> Messages("signup.verify"),
+            'placeholder -> Messages("signup.password"),
+            '_error -> signUpForm.error("password"))
 
-      @b4.submit('class -> "btn btn-primary"){ @Messages("signup.submit") }
-      <div class="post-form-opts">
-        <p>@Html(Messages("signup.postForm", routes.Auth.signIn))</p>
-      </div>
-    </fieldset>
-  }
+          @b4.submit('class -> "btn btn-primary"){ @Messages("signup.submit") }
+          <div class="post-form-opts">
+            <p>@Html(Messages("signup.postForm", routes.Auth.signIn))</p>
+          </div>
+        </fieldset>
+      }
+    </div>
+  </div>
 }

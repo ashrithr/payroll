@@ -1,6 +1,13 @@
 @(profile:Profile)(implicit request: RequestHeader, messages:Messages, config: com.typesafe.config.Config)
 
 @templates.mainAuth(Messages("finishSignUp.title"), tab="signup") {
-  <p>@Messages("finishSignUp.thanks", profile.fullName.get)</p>
-  <p>@Messages("finishSignUp.instructions", profile.email.get)</p>
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("finishSignUp.header")
+      </h3>
+      <p>@Messages("finishSignUp.thanks", profile.fullName.get)</p>
+      <p>@Messages("finishSignUp.instructions", profile.email.get)</p>
+    </div>
+  </div>
 }

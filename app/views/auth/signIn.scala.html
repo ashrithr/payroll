@@ -3,28 +3,34 @@
 @implicitFieldConstructor = @{b4.horizontal.fieldConstructor("col-md-3","col-md-6")}
 
 @views.html.templates.mainAuth(Messages("signin.title"), tab = "signin") {
-  @b4.form(routes.Auth.authenticate) {
-    <fieldset>
-      <legend>@Messages("signin.legend")</legend>
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+      @Messages("signin.legend")
+      </h3>
 
-      @b4.email(signInForm("email"),
-        '_label -> Messages("signin.email"),
-        'placeholder -> Messages("signin.email"),
-        'autofocus -> true)
+      @b4.form(routes.Auth.authenticate) {
+        <fieldset>
+          @b4.email(signInForm("email"),
+            '_label -> Messages("signin.email"),
+            'placeholder -> Messages("signin.email"),
+            'autofocus -> true)
 
-      @b4.password(signInForm("password"),
-        '_label -> Messages("signin.password"),
-        'placeholder -> Messages("signin.password"))
+          @b4.password(signInForm("password"),
+            '_label -> Messages("signin.password"),
+            'placeholder -> Messages("signin.password"))
 
-      @b4.checkbox(signInForm("rememberMe"),
-        '_text -> Messages("signin.rememberMe"),
-        'value -> false)
+          @b4.checkbox(signInForm("rememberMe"),
+            '_text -> Messages("signin.rememberMe"),
+            'value -> false)
 
-      @b4.submit('class -> "btn btn-primary"){ @Messages("signin.submit") }
-      <div class="post-form-opts">
-        <p>@Html(Messages("signin.signup", routes.Auth.startSignUp))</p>
-        <p>@Html(Messages("signin.resetPassword", routes.Auth.startResetPassword))</p>
-      </div>
-    </fieldset>
-  }
+          @b4.submit('class -> "btn btn-primary"){ @Messages("signin.submit") }
+          <div class="post-form-opts">
+            <p>@Html(Messages("signin.signup", routes.Auth.startSignUp))</p>
+            <p>@Html(Messages("signin.resetPassword", routes.Auth.startResetPassword))</p>
+          </div>
+        </fieldset>
+      }
+    </div>
+  </div>
 }

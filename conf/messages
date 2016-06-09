@@ -46,6 +46,7 @@ signup.submit=Sign up
 signup.postForm=Already a member? <a href="{0}">Sign in</a> now
 
 finishSignUp.title=Finish sign up
+finishSignUp.header=Sign up complete
 finishSignUp.thanks=Thank you {0} for signing up!
 finishSignUp.instructions=We''ve sent you an email to {0}. Follow the instructions to complete the sign up process.
 
@@ -60,6 +61,7 @@ signin.resetPassword=Forgot your password? <a href="{0}">Reset</a> it.
 signin.social=Or use one of the following services to sign in:
 
 reset.title=Reset password
+reset.header=Almost there
 reset.startLegend=Have you forgot your password?
 reset.email=Email
 reset.submit=Submit
@@ -70,6 +72,7 @@ reset.password.help=Password should contain at-least one uppercase, one lowercas
 reset.verifyPassword=Verify password
 reset.reset=Reset
 reset.doneTitle=Password reset completed
+reset.doneHeader=Password reset successful
 reset.done=Your password has been reset.
 reset.gotoIndex=Goto to the <a href={0}>main page</a>.
 
