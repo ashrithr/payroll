@@ -52,6 +52,11 @@ To deploy the application, follow these steps:
     
     mongodb.uri = "mongodb://localhost:27017/timetracker"
     
+    # To allow specific domains during sign up, specify them here
+    silhouette {
+      authenticator.domains = [ "*" ]
+    }
+    
     # Setup your mailer configuration - below is an example for gmail. More info: https://goo.gl/HfYnC4
     play.mailer {
       host=smtp.gmail.com
