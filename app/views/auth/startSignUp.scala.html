@@ -14,6 +14,7 @@
           @b4.email(signUpForm("email"),
             '_label -> Messages("signup.email"),
             'placeholder -> Messages("signup.email"),
+            '_help -> Messages("signup.email.help", config.getStringList("silhouette.authenticator.domains").mkString(",")),
             'autofocus -> true)
 
           @b4.text(signUpForm("firstName"),

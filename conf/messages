@@ -37,6 +37,7 @@ profile.update.image=To update the image, create a gravatar account with same em
 signup.title=Sign up
 signup.legend=Sign up for a new account
 signup.email=Email
+signup.email.help=A verification email will be sent out to the address you specify.
 signup.firstName=First name
 signup.lastName=Last name
 signup.password=Password
@@ -87,6 +88,7 @@ error.invalidCredentials=The supplied credentials are invalid
 error.profileError=Error getting profile data
 error.profileUnauthenticated=Can't access profile information: must authenticate first.
 error.profileUnauthorized=Can't access profile information: you don't have authorization to view.
+error.domain.mismatch=Domain does not match. Please use an email addresses ending in: {0}.
 
 #
 # Mails

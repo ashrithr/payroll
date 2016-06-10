@@ -47,42 +47,47 @@ class Auth @Inject() (
   }
 
   def handleStartSignUp = Action.async { implicit request =>
+    val domains = configuration.underlying.as[Seq[String]]("silhouette.authenticator.domains")
     SignUpForm.signUpForm.bindFromRequest.fold(
       bogusForm => Future.successful(BadRequest(views.html.auth.startSignUp(bogusForm))),
       signUpData => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, signUpData.email)
         userService.retrieve(loginInfo).flatMap {
           case Some(_) =>
-            Future.successful(Redirect(routes.Auth.startSignUp()).flashing(
-              "error" -> Messages("error.userExists", signUpData.email)))
+            Future.successful(Redirect(routes.Auth.startSignUp()).flashing("error" -> Messages("error.userExists", signUpData.email)))
           case None =>
-            val profile = Profile(
-              loginInfo = loginInfo,
-              confirmed = false,
-              email = Some(signUpData.email),
-              firstName = Some(signUpData.firstName),
-              lastName = Some(signUpData.lastName),
-              fullName = Some(s"${signUpData.firstName} ${signUpData.lastName}"),
-              passwordInfo = None,
-              avatarUrl = None)
-            for {
-              avatarUrl <- avatarService.retrieveURL(signUpData.email)
-              usersCount <- userService.findAll.map(_.size)
-              user <- userService.save(
-                User(
-                  id = UUID.randomUUID(),
-                  profiles = List(profile.copy(avatarUrl = avatarUrl)),
-                  role = if (usersCount == 0) {
-                    models.Role.OWNER
-                  } else {
-                    models.Role.SIMPLE_USER
-                  }
-                ))
-              _ <- authInfoRepository.add(loginInfo, passwordHasher.hash(signUpData.password))
-              token <- userTokenService.save(UserToken.create(user.id, signUpData.email, isSignUp = true))
-            } yield {
-              mailer.welcome(profile, link = routes.Auth.signUp(token.id.toString).absoluteURL())
-              Ok(views.html.auth.finishSignUp(profile))
+            val userDomain = signUpData.email.split("@").last
+            if (domains.contains(userDomain) || domains.contains("*")) {
+              val profile = Profile(
+                loginInfo = loginInfo,
+                confirmed = false,
+                email = Some(signUpData.email),
+                firstName = Some(signUpData.firstName),
+                lastName = Some(signUpData.lastName),
+                fullName = Some(s"${signUpData.firstName} ${signUpData.lastName}"),
+                passwordInfo = None,
+                avatarUrl = None)
+              for {
+                avatarUrl <- avatarService.retrieveURL(signUpData.email)
+                usersCount <- userService.findAll.map(_.size)
+                user <- userService.save(
+                  User(
+                    id = UUID.randomUUID(),
+                    profiles = List(profile.copy(avatarUrl = avatarUrl)),
+                    role = if (usersCount == 0) {
+                      models.Role.OWNER
+                    } else {
+                      models.Role.SIMPLE_USER
+                    }
+                  ))
+                _ <- authInfoRepository.add(loginInfo, passwordHasher.hash(signUpData.password))
+                token <- userTokenService.save(UserToken.create(user.id, signUpData.email, isSignUp = true))
+              } yield {
+                mailer.welcome(profile, link = routes.Auth.signUp(token.id.toString).absoluteURL())
+                Ok(views.html.auth.finishSignUp(profile))
+              }
+            } else {
+              Future(Redirect(routes.Auth.startSignUp()).flashing("error" -> Messages("error.domain.mismatch", domains.mkString(","))))
             }
         }
       }
