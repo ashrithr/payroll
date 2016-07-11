@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
 import com.typesafe.config.{Config, ConfigFactory}
-import forms.InvoiceForm
+import forms.{InvoiceForm, InvoicePaymentForm}
 import models._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -19,6 +19,7 @@ import utils.PdfGenerator
 import utils.auth.{UserEnv, WithRole}
 import utils.DateTimeUtils._
 import net.ceedubs.ficus.Ficus._
+import play.api.Logger
 
 import scala.concurrent.Future
 
@@ -26,6 +27,8 @@ class InvoiceController @Inject() (val messagesApi: MessagesApi,
   val silhouette: Silhouette[UserEnv],
   val userService: UserService)(implicit config: Config)
   extends Controller with I18nSupport {
+
+  private val logger = Logger(this.getClass)
 
   def index() = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
     for {
@@ -130,21 +133,52 @@ class InvoiceController @Inject() (val messagesApi: MessagesApi,
       invoices <- Invoice.find(Json.obj("paymentReceived" -> false, "hidden" -> false)).map(_.sortBy(_.dueDate)(Ordering.fromLessThan(_ isBefore _)))
       consultants <- userService.findAll.map(_.filter(_.role == Role.CONSULTANT))
     } yield {
-      Ok(views.html.invoices.invoicesDue(request.identity, request.authenticator.loginInfo, invoices, consultants))
+      Ok(views.html.invoices.invoicesDue(request.identity, request.authenticator.loginInfo, invoices, consultants, InvoicePaymentForm.form))
     }
   }
 
   def paymentReceived(invoiceId: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
+    InvoicePaymentForm.form.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.InvoiceController.invoicesDue()).flashing("error" -> "Errors in form"))
+      },
+      pd => {
+        val paymentAmount = pd.paymentReceivedAmount
+        for {
+          invoice <- Invoice.findById(invoiceId)
+        } yield {
+          Invoice.update(
+            invoiceId,
+            invoice.get.copy(
+              paymentReceivedDate = Some(DateTime.now),
+              paymentReceivedAmount = Some(paymentAmount.toDouble),
+              paymentReceived = true
+            )
+          )
+          Redirect(routes.InvoiceController.invoicesDue()).flashing("success" -> "Successfully updated timesheet attribute paymentReceived")
+        }
+      }
+    )
+  }
+
+  def accounting = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
     for {
-      invoice <- Invoice.findById(invoiceId)
+      invoices <- Invoice.find(Json.obj("hidden" -> false))
+      consultants <- userService.findAll.map(_.filter(_.role == Role.CONSULTANT))
+      projects <- Project.find()
     } yield {
-      Invoice.update(
-        invoiceId,
-        invoice.get.copy(
-          paymentReceived = true
-        )
-      )
-      Redirect(routes.InvoiceController.invoicesDue()).flashing("success" -> "Successfully updated timesheet attribute paymentReceived")
+      Ok(views.html.invoices.accounting(request.identity, request.authenticator.loginInfo, invoices, consultants, projects))
+    }
+  }
+
+  def accountingConsultant(cId: String, pId: String) = silhouette.SecuredAction(WithRole(Role.OWNER) || WithRole(Role.ADMIN)).async { implicit request =>
+    for {
+      consultant <- userService.find(UUID.fromString(cId))
+      project <- Project.findById(pId)
+      vendor <- Vendor.findById(project.get.vendorId)
+      invoices <- Invoice.find(Json.obj("projectId" -> pId, "consultantId" -> cId))
+    } yield {
+      Ok(views.html.invoices.accountingConsultant(request.identity, request.authenticator.loginInfo, invoices, consultant, project, vendor))
     }
   }
 

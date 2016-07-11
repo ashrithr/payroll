@@ -22,6 +22,8 @@ case class Invoice(
   totalCost: Double,
   paymentReceived: Boolean = false,
   hidden: Boolean = false,
+  paymentReceivedDate: Option[DateTime] = None,
+  paymentReceivedAmount: Option[Double] = None,
   var _id: Option[BSONObjectID] = None,
   var created: Option[DateTime] = None,
   var updated: Option[DateTime] = None

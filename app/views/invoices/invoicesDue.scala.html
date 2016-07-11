@@ -1,7 +1,9 @@
 @import com.mohiva.play.silhouette.api.LoginInfo
 @import org.joda.time.DateTime
 
-@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultants: List[User])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
+@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultants: List[User], invoicePaymentForm: Form[forms.InvoicePaymentForm.FormData])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
+
+@implicitFieldConstructor = @{ b4.horizontal.fieldConstructor("col-md-4", "col-md-8") }
 
 @invoiceScripts = {
   <script type="text/javascript">
@@ -23,6 +25,28 @@
 }
 
 @views.html.templates.mainApp(Messages("app.invoices.due.title"), tab = "invoices", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo), invoiceScripts) {
+
+  @invoices.map { invoice =>
+    <div class="modal fade" id="updatePaymentDetails-@invoice._id.get.stringify" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel"> @Messages("modal.invoice.paymentDetails.form.title")</h4>
+          </div>
+          <div class="modal-body">
+          @b4.form(routes.InvoiceController.paymentReceived(invoice._id.get.stringify)) {
+            @b4.text(invoicePaymentForm("paymentReceivedAmount"),
+              '_label -> Messages("modal.invoice.paymentDetails.form.label.paymentAmount"),
+              '_placeholder -> Messages("modal.invoice.paymentDetails.form.placeholder.paymentAmount"),
+              '_help -> Messages("modal.invoice.paymentDetails.form.help.paymentAmount"))
+            @b4.submit('class -> "btn btn-primary-outline"){ @Messages("modal.invoice.paymentDetails.form.submit") }
+          }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 
   <div class="card">
     <div class="card-block">
@@ -47,9 +71,9 @@
               <b class="list-group-item-heading">
                 @Messages("invoices.due.invoice.dueToday.heading", invoice._id.get.stringify.takeRight(5), invoice.dueDate.toString("MM/dd/yyyy"))
                 <span class="pull-xs-right">
+                  <button type="button" class="btn btn-success btn-sm btn-success-outline" data-toggle="modal" data-target="#updatePaymentDetails-@invoice._id.get.stringify">Payment Received</button>
                   <span class="label label-warning">Due Today</span>
                   <span class="label label-default timeago" date-value="@invoice.created"></span>
-                  <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
                 </span>
               </b>
               <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName.getOrElse("FNU LNU"), invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
@@ -59,9 +83,9 @@
               <b class="list-group-item-heading">
                 @Html(Messages("invoices.due.invoice.pastDue.heading", invoice._id.get.stringify.takeRight(5), invoice.dueDate, invoice.dueDate.toString("MM/dd/yyyy")))
                 <span class="pull-xs-right">
+                  <button type="button" class="btn btn-success btn-sm btn-success-outline" data-toggle="modal" data-target="#updatePaymentDetails-@invoice._id.get.stringify">Payment Received</button>
                   <span class="label label-danger">Past Due</span>
                   <span class="label label-default timeago" date-value="@invoice.created"></span>
-                  <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
                 </span>
               </b>
               <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName.getOrElse("FNU LNU"), invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
@@ -71,8 +95,8 @@
               <b class="list-group-item-heading">
                 @Html(Messages("invoices.due.invoice.dueIn.heading", invoice._id.get.stringify.takeRight(5), invoice.dueDate, invoice.dueDate.toString("MM/dd/yyyy")))
                 <span class="pull-xs-right">
+                  <button type="button" class="btn btn-success btn-sm btn-success-outline" data-toggle="modal" data-target="#updatePaymentDetails-@invoice._id.get.stringify">Payment Received</button>
                   <span class="label label-default timeago" date-value="@invoice.created"></span>
-                  <a href="#" id="paymentMadeInvoice-@invoice._id.get.stringify"><span class="label label-success">Payment Received</span></a>
                 </span>
               </b>
               <p class="list-group-item-text">@Messages("invoices.due.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName.getOrElse("FNU LNU"), invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>

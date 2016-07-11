@@ -1,0 +1,69 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultant: Option[User], project: Option[Project], vendor: Option[Vendor])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
+
+@views.html.templates.mainApp(Messages("app.invoices.accounting.consultant.title"), tab = "invoices", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("invoices.accounting.consultant.header")
+      </h3>
+      <h6 class="card-subtitle text-muted">
+        @Messages("invoices.accounting.consultant.subHeader", consultant.flatMap(_.profiles.head.fullName).getOrElse("FNU LNU"))
+      </h6>
+    </div>
+
+    <div class="card-block">
+      <p>Vendor: @vendor.map(_.companyName)</p>
+      <p>Project Start Date: @project.map(_.startDate.map(_.toString("YYYY/MM/dd")))</p>
+      <p>Project End Date: @project.map(_.endDate.map(_.toString("YYYY/MM/dd")))</p>
+      <p>Project Payment Net: @project.map(_.paymentNet)</p>
+    </div>
+
+    @invoices match {
+      case Nil => {
+        <div class="card-block">
+          <p class="lead">@Messages("invoices.accounting.consultant.none")</p>
+        </div>
+      }
+      case _ => {
+        <div class="card-block">
+          <table class="table-responsive table-sm small-text">
+            <thead>
+              <tr>
+                <th>Invoice #</th>
+                <th>Invoice Generated Date</th>
+                <th>Rate/Hr</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Billable Hours</th>
+                <th>$ Amount</th>
+                <th>Received Amount</th>
+                <th>Expected Payment Date</th>
+                <th>Received Date</th>
+                <th>Due Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              @invoices.map { invoice =>
+                <tr>
+                  <td>@invoice._id.get.stringify.takeRight(5)</td>
+                  <td>@invoice.created.map(_.toString("YYYY/MM/dd"))</td>
+                  <td>@project.map(_.team.map(_.find(_.userId == consultant.get.id.toString).map(_.rate)))</td>
+                  <td>@invoice.startDate.toString("YYYY/MM/dd")</td>
+                  <td>@invoice.endDate.toString("YYYY/MM/dd")</td>
+                  <td>@invoice.totalHours</td>
+                  <td>@invoice.totalCost</td>
+                  <td>@invoice.paymentReceivedAmount.getOrElse(0.00)</td>
+                  <td>@invoice.dueDate.toString("YYYY/MM/dd")</td>
+                  <td>@invoice.paymentReceivedDate.map(_.toString("YYYY/MM/dd")).getOrElse("N/A")</td>
+                  <td>@{invoice.totalCost - invoice.paymentReceivedAmount.getOrElse(0.00) }</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  </div>
+}

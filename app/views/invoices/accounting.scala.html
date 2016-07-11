@@ -1,0 +1,39 @@
+@import com.mohiva.play.silhouette.api.LoginInfo
+
+@(loggedUser: User, loginInfo: LoginInfo, invoices: List[Invoice], consultants: List[User], projects: List[Project])(implicit request: RequestHeader, messages: Messages, config: com.typesafe.config.Config)
+
+@views.html.templates.mainApp(Messages("app.invoices.accounting.title"), tab = "invoices", loggedUser = Some(loggedUser), loginInfo = Some(loginInfo)) {
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title text-success">
+        @Messages("invoices.accounting.header")
+      </h3>
+      <h6 class="card-subtitle text-muted">
+        @Messages("invoices.accounting.subHeader")
+      </h6>
+    </div>
+    @invoices match {
+      case Nil => {
+        <div class="card-block">
+          <p class="lead">@Messages("invoices.accounting.none")</p>
+        </div>
+      }
+      case _ => {
+        <ul class="list-group list-group-flush">
+          @invoices.groupBy(invoice => (invoice.consultantId, invoice.projectId)).keys.map { g =>
+            <li class="list-group-item">
+              <b class="list-group-item-heading">
+                <a href="@routes.InvoiceController.accountingConsultant(g._1, g._2)">
+                  Accounting Page for @consultants.find(_.id.toString == g._1).map(_.profiles.head.fullName).getOrElse("FNU LNU")
+                </a>
+              </b>
+              <p class="list-group-item-text">Project: @projects.find(_._id.get.stringify == g._2).get.projectName</p>
+            </li>
+
+          }
+        </ul>
+      }
+    }
+
+  </div>
+}
