@@ -48,8 +48,8 @@
               Invoice #@invoice._id.get.stringify.takeRight(5)
               <span class="pull-xs-right">
                 <span class="label label-default timeago" date-value="@invoice.created"></span>
-                <a href="@routes.InvoiceController.generateInvoice(invoice._id.get.stringify)"><span class="label label-primary">Generate</span></a>
-                <a href="#" id="hideInvoice-@invoice._id.get.stringify"><span class="label label-warning">Hide</span></a>
+                <a class="btn btn-primary btn-sm btn-primary-outline" role="button" href="@routes.InvoiceController.generateInvoice(invoice._id.get.stringify)">Generate</a>
+                <a class="btn btn-warning btn-sm btn-warning-outline" role="button" href="#" id="hideInvoice-@invoice._id.get.stringify">Hide</a>
               </span>
             </b>
             <p class="list-group-item-text">@Messages("invoices.index.invoice.description", consultants.find(_.id.toString == invoice.consultantId).get.profiles.head.fullName.getOrElse("FNU LNU"), invoice.startDate.toString("MM/dd/yyyy"), invoice.endDate.toString("MM/dd/yyyy"))</p>
