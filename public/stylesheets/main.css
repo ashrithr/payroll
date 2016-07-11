@@ -173,3 +173,7 @@ body.modal-open {
 .w-medium {
     width: 176px;
 }
+
+.small-text {
+    font-size: small;
+}

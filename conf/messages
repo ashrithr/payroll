@@ -330,6 +330,7 @@ invoice.start.date.label=Start Date
 invoice.start.date.placeholder=Enter the Start Date (MM/DD/YYYY)
 invoice.end.date.label=End Date
 invoice.end.date.placeholder=Enter the End Date (MM/DD/YYYY)
+invoice.submit=Create Invoice
 
 # Invoices - Due
 app.invoices.due.title=Invoices - Due
@@ -341,3 +342,21 @@ invoices.due.invoice.dueToday.heading=Invoice #{0} is due today ({1})
 invoices.due.invoice.pastDue.heading=Invoice #{0} is past due by <span class="timeago" date-value="{1}"></span> ({2})
 invoices.due.invoice.dueIn.heading=Invoice #{0} is due in <span class="duein" date-value="{1}"></span> ({2})
 invoices.due.invoice.description=Services provided by {0} during {1}-{2}
+
+# Invoices - Payment Details Modal
+modal.invoice.paymentDetails.form.title=Update Payment Details
+modal.invoice.paymentDetails.form.label.paymentAmount=Received Amount
+modal.invoice.paymentDetails.form.placeholder.paymentAmount=00.00
+modal.invoice.paymentDetails.form.help.paymentAmount=Enter amount in 0000.00 format
+modal.invoice.paymentDetails.form.submit=Submit
+
+# Invoices - Accounting
+app.invoices.accounting.title=Accounting - Invoice
+invoices.accounting.header=Invoice Accounting
+invoices.accounting.subHeader=Find the individual accounting pages for each consultant
+invoices.accounting.none=There are no accounting pages created yet, to get started create some invoices.
+
+# Invoices - Accounting Consultant Page
+app.invoices.accounting.consultant.title=Accounting - Consultant
+invoices.accounting.consultant.header=Invoice Accounting
+invoices.accounting.consultant.subHeader=Accounting Page for Consultant - {0}

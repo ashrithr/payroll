@@ -63,7 +63,9 @@ POST     /invoices                                    controllers.InvoiceControl
 GET      /invoices/generate/:invoiceId                controllers.InvoiceController.generateInvoice(invoiceId: String)
 PUT      /invoices/hide/:invoiceId                    controllers.InvoiceController.hideInvoice(invoiceId: String)
 GET      /invoices/due                                controllers.InvoiceController.invoicesDue
-PUT      /invoices/paymentMade/:invoiceId             controllers.InvoiceController.paymentReceived(invoiceId: String)
+POST     /invoices/paymentMade/:invoiceId             controllers.InvoiceController.paymentReceived(invoiceId: String)
+GET      /invoices/accounting                         controllers.InvoiceController.accounting
+GET      /invoices/accounting/:cId/:pId               controllers.InvoiceController.accountingConsultant(cId: String, pId: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET      /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
