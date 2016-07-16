@@ -56,7 +56,4 @@ class UserController @Inject() (val messagesApi: MessagesApi,
     )
   }
 
-  // TODO
-  def deleteUser(id: String) = ???
-
 }

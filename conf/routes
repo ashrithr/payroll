@@ -8,7 +8,6 @@ GET      /profile                                     controllers.Application.pr
 GET      /users                                       controllers.UserController.users
 GET      /users/:id                                   controllers.UserController.getUser(id: String)
 POST     /users/:id                                   controllers.UserController.updateUserRole(id: String)
-#DELETE  /users/:id                                   controllers.UserController.deleteUser(id: String)
 
 # Rest api
 POST     /rest/auth/authenticate                      controllers.RestApiAuthController.authenticate
