@@ -15,7 +15,7 @@ class Scheduler @Inject() (
   /**
     * Invoice notifications for today and past due
     */
-  system.scheduler.schedule(0.seconds, 1.day, invoiceDueNotifierActor, InvoiceDueNotifier.DueToday)
-  system.scheduler.schedule(0.seconds, 7.days, invoiceDueNotifierActor, InvoiceDueNotifier.PastDue)
+  system.scheduler.schedule(30.seconds, 1.day, invoiceDueNotifierActor, InvoiceDueNotifier.DueToday)
+  system.scheduler.schedule(30.seconds, 7.days, invoiceDueNotifierActor, InvoiceDueNotifier.PastDue)
 
 }
